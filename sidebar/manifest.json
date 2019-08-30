@@ -1,8 +1,8 @@
 {
 
   "manifest_version": 2,
-  "name": "Proto No. 1",
-  "description": "Displays a sidebar with basic info about active tab.",
+  "name": "Sidebar Demo",
+  "description": "Demonstrates content updates and toggling on and off of sidebar.",
   "version": "0.1",
   "applications": {
     "gecko": {
@@ -10,9 +10,17 @@
     }
   },
 
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_title": "Sidebar Demo"
+  },
+
   "sidebar_action": {
-    "default_title" : "Proto No. 1",
-    "default_panel": "panel.html"
+    "default_title" : "Sidebar Demo",
+    "default_panel": "sidebar/panel.html"
   },
 
   "permissions": ["tabs"],
