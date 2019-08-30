@@ -1,0 +1,36 @@
+{
+
+  "manifest_version": 2,
+  "name": "Page Structure",
+  "description": "Displays a sidebar with page structure information relating to accessibility.",
+  "version": "0.1",
+  "applications": {
+    "gecko": {
+      "strict_min_version": "54.0a1"
+    }
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_title": "Page Structure"
+  },
+
+  "sidebar_action": {
+    "default_title" : "Page Structure",
+    "default_panel": "sidebar/panel.html"
+  },
+
+  "permissions": ["tabs"],
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      }
+    }
+  }
+
+}

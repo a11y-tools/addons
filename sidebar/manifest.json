@@ -1,0 +1,28 @@
+{
+
+  "manifest_version": 2,
+  "name": "Proto No. 1",
+  "description": "Displays a sidebar with basic info about active tab.",
+  "version": "0.1",
+  "applications": {
+    "gecko": {
+      "strict_min_version": "54.0a1"
+    }
+  },
+
+  "sidebar_action": {
+    "default_title" : "Proto No. 1",
+    "default_panel": "panel.html"
+  },
+
+  "permissions": ["tabs"],
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      }
+    }
+  }
+
+}
