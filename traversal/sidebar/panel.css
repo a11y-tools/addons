@@ -9,6 +9,10 @@ h2 {
   font-size: 133%;
 }
 
+h3 {
+  margin-top: 0;
+}
+
 #content {
   height: 30%;
   border: 1px solid #ddd;

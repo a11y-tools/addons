@@ -1,17 +1,16 @@
 {
-
   "manifest_version": 2,
   "name": "DOM Traversal",
   "description": "Displays a sidebar with DOM traversal information.",
   "version": "0.1",
-  "applications": {
-    "gecko": {
-      "strict_min_version": "54.0a1"
-    }
-  },
+
+  "permissions": [
+    "<all_urls>",
+    "tabs"
+  ],
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [ "background.js" ]
   },
 
   "browser_action": {
@@ -23,8 +22,6 @@
     "default_panel": "sidebar/panel.html"
   },
 
-  "permissions": ["tabs"],
-
   "commands": {
     "_execute_sidebar_action": {
       "suggested_key": {
@@ -32,5 +29,4 @@
       }
     }
   }
-
 }
