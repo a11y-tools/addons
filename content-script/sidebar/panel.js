@@ -1,4 +1,6 @@
 var myWindowId;
+
+// Get message strings from locale-specific messages.json file
 let getMessage = browser.i18n.getMessage;
 let sidebarTitle = getMessage("sidebarTitle");
 let titleLabel = getMessage("contentTitle");
