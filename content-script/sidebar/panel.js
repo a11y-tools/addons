@@ -1,4 +1,9 @@
 var myWindowId;
+let getMessage = browser.i18n.getMessage;
+let sidebarTitle = getMessage("sidebarTitle");
+let titleLabel = getMessage("contentTitle");
+let urlLabel = getMessage("contentURL");
+let protocolNotSupported = getMessage("protocolNotSupported");
 
 /*
 *   When the sidebar loads, store the ID of its window, and update its content.
@@ -32,12 +37,11 @@ browser.runtime.onMessage.addListener(
 *   current content information from the active tab.
 */
 function getContent () {
-  let msg = "This extension only supports 'http' and 'https' protocols."
   browser.tabs.query({ windowId: myWindowId, active: true })
   .then((tabs) => {
     let tab = tabs[0];
     if (tab.url.indexOf('http:') != 0 && tab.url.indexOf('https:') != 0) {
-      updateSidebar (msg)
+      updateSidebar (protocolNotSupported);
     }
     else {
       browser.tabs.executeScript(null, { file: '../content.js' });
@@ -45,26 +49,33 @@ function getContent () {
   });
 }
 
+/*
+*   getFormattedData: Convert the message data into an HTML string with
+*   internationalized labels.
+*/
 function getFormattedData (message) {
-  return `<h3>Title</h3>
+  return `<h3>${titleLabel}</h3>
           <p>${message.title}</p>
-          <h3>URL</h3>
-          <p>${message.href}</p>`;
+          <h3>${urlLabel}</h3>
+          <p>${message.url}</p>`;
 }
 
 /*
 *   updateSidebar: Display the content sent by the content script.
 */
 function updateSidebar (message) {
-  let content = '';
+  let content = document.getElementById('content');
+
+  // sidebar title
+  document.getElementById('title').textContent = sidebarTitle;
+
+  // sidebar content
   if (typeof message === 'object') {
-    content = getFormattedData(message);
+    content.innerHTML = getFormattedData(message);
   }
   else {
-    content = message;
+    content.textContent = message;
   }
-
-  document.getElementById('content').innerHTML = content;
 }
 
 /*

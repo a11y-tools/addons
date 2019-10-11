@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Content Script",
-  "description": "Displays a sidebar with information from active tab sent via content script.",
+  "default_locale": "en",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
   "version": "0.1",
 
   "permissions": [
@@ -14,11 +15,11 @@
   },
 
   "browser_action": {
-    "default_title": "Content Script"
+    "default_title": "__MSG_extensionName__"
   },
 
   "sidebar_action": {
-    "default_title" : "Content Script",
+    "default_title" : "__MSG_extensionName__",
     "default_panel": "sidebar/panel.html"
   },
 
