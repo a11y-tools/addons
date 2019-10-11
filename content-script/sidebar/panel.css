@@ -1,0 +1,20 @@
+html, body {
+  height: 90%;
+  font: caption;
+  margin: 2px 7px 0 6px;
+  background-color: white;
+}
+
+h2 {
+  font-size: 133%;
+}
+
+h3 {
+  margin-top: 0;
+}
+
+#content {
+  height: 30%;
+  border: 1px solid #ddd;
+  padding: 5px;
+}

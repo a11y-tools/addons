@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Content Script",
+  "description": "Displays a sidebar with information from active tab sent via content script.",
+  "version": "0.1",
+
+  "permissions": [
+    "<all_urls>",
+    "tabs"
+  ],
+
+  "background": {
+    "scripts": [ "background.js" ]
+  },
+
+  "browser_action": {
+    "default_title": "Content Script"
+  },
+
+  "sidebar_action": {
+    "default_title" : "Content Script",
+    "default_panel": "sidebar/panel.html"
+  },
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      }
+    }
+  }
+}
