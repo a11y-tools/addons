@@ -1,16 +1,16 @@
 {
   "extensionName": {
-    "message": "Content Script",
+    "message": "Structure",
     "description": "Name of the extension"
   },
 
   "extensionDescription": {
-    "message": "Displays a sidebar with information from the active tab sent via content script.",
+    "message": "Collect structural information, such as landmarks and headings, from the active tab.",
     "description": "Description of the extension"
   },
 
   "sidebarTitle": {
-    "message": "Content Information",
+    "message": "Structural Information",
     "description": "Title that labels the sidebar information"
   },
 
