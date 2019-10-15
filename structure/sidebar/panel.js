@@ -60,9 +60,17 @@ function onError (error) {
 /*
 *   React to browser.tabs.onUpdated only when status is 'complete'
 */
+let timeoutID;
 function handleTabUpdate (tabId, changeInfo, tab) {
-  if (changeInfo.status === "complete")
+  clearTimeout(timeoutID);
+  if (changeInfo.status === "complete") {
     updateContent();
+  }
+  else {
+    timeoutID = setTimeout(function () {
+      updateSidebar(changeInfo.status + '...');
+    }, 250);
+  }
 }
 
 /*
