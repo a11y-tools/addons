@@ -1,0 +1,31 @@
+{
+  "extensionName": {
+    "message": "Content Script",
+    "description": "Name of the extension"
+  },
+
+  "extensionDescription": {
+    "message": "Displays a sidebar with information from the active tab sent via content script.",
+    "description": "Description of the extension"
+  },
+
+  "sidebarTitle": {
+    "message": "Content Information",
+    "description": "Title that labels the sidebar information"
+  },
+
+  "contentTitle": {
+    "message": "Title",
+    "description": "Page title retrieved by content script"
+  },
+
+  "contentURL": {
+    "message": "URL",
+    "description": "Page URL retrieved by content script"
+  },
+
+  "protocolNotSupported": {
+    "message": "Protocol not supported; unable to retrieve content information.",
+    "description": "Message explaining that content script cannot be executed."
+  }
+}
