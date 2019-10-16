@@ -2,9 +2,10 @@ var myWindowId;
 
 // Get message strings from locale-specific messages.json file
 let getMessage = browser.i18n.getMessage;
-let sidebarTitle = getMessage("sidebarTitle");
-let titleLabel = getMessage("contentTitle");
-let urlLabel = getMessage("contentURL");
+let sidebarTitle         = getMessage("sidebarTitle");
+let titleLabel           = getMessage("contentTitle");
+let urlLabel             = getMessage("contentURL");
+let tabIsLoading         = getMessage("tabIsLoading");
 let protocolNotSupported = getMessage("protocolNotSupported");
 
 /*
@@ -58,7 +59,9 @@ function onError (error) {
 }
 
 /*
-*   React to browser.tabs.onUpdated only when status is 'complete'
+*   Handle tabs.onUpdated event only when status is 'complete':
+*   There can be numerous calls to this event handler, as multiple
+*   events are triggered while the tab is loading the page.
 */
 let timeoutID;
 function handleTabUpdate (tabId, changeInfo, tab) {
@@ -68,7 +71,7 @@ function handleTabUpdate (tabId, changeInfo, tab) {
   }
   else {
     timeoutID = setTimeout(function () {
-      updateSidebar(changeInfo.status + '...');
+      updateSidebar(tabIsLoading);
     }, 250);
   }
 }

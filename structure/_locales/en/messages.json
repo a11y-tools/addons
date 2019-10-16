@@ -24,6 +24,11 @@
     "description": "Page URL retrieved by content script"
   },
 
+  "tabIsLoading": {
+    "message": "Updating...",
+    "description": "Message indicating that content in the sidebar panel is being updated."
+  },
+
   "protocolNotSupported": {
     "message": "Protocol not supported; unable to retrieve content information.",
     "description": "Message explaining that content script cannot be executed."
