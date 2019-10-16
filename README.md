@@ -40,3 +40,24 @@ the following new features:
     the content needed for the call to the `updateSidebar` function.
 * Uses the `browser.i18n` API to store all UI labels and messages in locale-
   specific files.
+
+### 3. traversal
+
+This prototype builds on the feature set of the `content-script` prototype by
+adding the following new features:
+
+* The content script traverses the DOM of the page loaded into the active tab
+  and saves filtered information (currently only heading elements) into the
+  data structure that it sends as a message to the background script.
+* The content script uses the DOM `TreeWalker` API.
+* The message passing is now centralized, and occurs only between the content
+  and background scripts. When the background script receives the message, it
+  stores it in the contentInfo variable.
+* The event listeners for tabs.onUpdated and tabs.onActivated are removed when
+  the sidebar is closed.
+* The tabs.onUpdated event listener now has a filter that specifies that only
+  updates to the `status` property should fire events.
+* A special handler for tabs.onUpdated events, named `handleTabUpdate`, was
+  created that examines the `status` property: When its value is "complete" it
+  calls the `updateContent` function; otherwise it displays the `tabIsLoading`
+  message using a timeout to avoid jerkiness with sidebar content updates.
