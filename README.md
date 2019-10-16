@@ -34,12 +34,13 @@ the following new features:
 * Utilizes a content script to get information from the page loaded into the
   active tab (currently, just the page title and URL).
 * The message passing within the extension now does the following:
-  * When the sidebar content needed to be updated, the `getContent` function
-    is called, which runs the content script. It, in turn, sends a message,
-    which `panel.js` listens for. When that message is received, it contains
-    the content needed for the call to the `updateSidebar` function.
-* Uses the `browser.i18n` API to store all UI labels and messages in locale-
-  specific files.
+  * When the sidebar content needs to be updated, the `getContent` function
+    is called, which runs the content script.
+  * It, in turn, sends a message, which `panel.js` listens for.
+  * When that message is received, it contains the content needed for the call
+    to the `updateSidebar` function.
+* The prototype uses the `browser.i18n` API to store and retrieve UI labels
+  and messages from locale-specific files.
 
 ### 3. traversal
 
