@@ -52,7 +52,10 @@ adding the following new features:
 * The content script uses the DOM `TreeWalker` API.
 * The message passing is now centralized, and occurs only between the content
   and background scripts. When the background script receives the message, it
-  stores it in the contentInfo variable.
+  stores its data in the `contentInfo` variable.
+* The function `updateContent` in `panel.js` calls the content script, and
+  waits until the Promise it receives acknowledges that the script has executed
+  before it accesses the data sent to the background script.
 * The event listeners for tabs.onUpdated and tabs.onActivated are removed when
   the sidebar is closed.
 * The tabs.onUpdated event listener now has a filter that specifies that only
