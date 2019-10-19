@@ -9,11 +9,35 @@ let tabIsLoading         = getMessage("tabIsLoading");
 let protocolNotSupported = getMessage("protocolNotSupported");
 
 /*
-*   When the sidebar loads, store the ID of its window, and update its content.
+*   When the sidebar loads, store the ID of the current window and update
+*   the sidebar content.
 */
 browser.windows.getCurrent({ populate: true }).then( (windowInfo) => {
   myWindowId = windowInfo.id;
   updateContent();
+});
+
+/*
+*   Handle window focus change events by checking whether the sidebar is
+*   open in the newly focused window, and if so, save the new window ID
+*   and update the sidebar content.
+*/
+browser.windows.onFocusChanged.addListener((windowId) => {
+  console.log(`windowId: ${windowId}`);
+  function onInvalidId (error) {
+    // console.log(`onInvalidId: ${error}`);
+  }
+
+  function onGotStatus (result) {
+    if (result) {
+      myWindowId = windowId;
+      updateContent();
+      console.log('Updating for onFocusChanged to window: ' + myWindowId);
+    }
+  }
+
+  let checkingOpenStatus = browser.sidebarAction.isOpen({ windowId });
+  checkingOpenStatus.then(onGotStatus, onInvalidId);
 });
 
 /*
@@ -44,7 +68,7 @@ function updateSidebar (info) {
   // sidebar content
   if (typeof info === 'object') {
     content.innerHTML = getFormattedData(info);
-    displayInfo(info.infoList);
+    // displayInfo(info.infoList);
   }
   else {
     content.textContent = info;
@@ -65,6 +89,9 @@ function onError (error) {
 */
 let timeoutID;
 function handleTabUpdate (tabId, changeInfo, tab) {
+  // Skip content update when new page is loaded in background tab
+  if (!tab.active) return;
+
   clearTimeout(timeoutID);
   if (changeInfo.status === "complete") {
     updateContent();
