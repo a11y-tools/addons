@@ -68,7 +68,7 @@ function updateSidebar (info) {
   // sidebar content
   if (typeof info === 'object') {
     content.innerHTML = getFormattedData(info);
-    // displayInfo(info.infoList);
+    displayInfo(info.infoList);
   }
   else {
     content.textContent = info;
