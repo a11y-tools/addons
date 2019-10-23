@@ -5,17 +5,99 @@ html, body {
   background-color: white;
 }
 
-h2 {
+body > h2 {
   font-size: 133%;
+  margin: 0.66em 0 0.33em;
+  padding: 0;
 }
 
-h3 {
-  margin-top: 0;
+#page-info-content h3 {
+  font-size: 110%;
+  margin: 0;
 }
 
-#content {
+#page-info-content p {
+  margin: 0.5em 0;
+}
+
+#structure-content h1,
+#structure-content h2,
+#structure-content h3,
+#structure-content h4,
+#structure-content h5,
+#structure-content h6 {
+  font-size: 100%;
+  font-weight: normal;
+  margin: 1.25em 0 0.5em 0;
+}
+
+#structure-content h2 + h2,
+#structure-content h3 + h3,
+#structure-content h4 + h4,
+#structure-content h5 + h5,
+#structure-content h6 + h6 {
+  margin-top: 0.25em;
+}
+
+#structure-content *:first-child {
+  margin-top: 0.25em;
+}
+
+/*
+#structure-content h1 + h2,
+#structure-content h3 + h2,
+#structure-content h4 + h2,
+#structure-content h5 + h2,
+#structure-content h6 + h2,
+
+#structure-content h2 + h3,
+#structure-content h4 + h3,
+#structure-content h5 + h3,
+#structure-content h6 + h3,
+
+#structure-content h3 + h4,
+#structure-content h5 + h4,
+#structure-content h6 + h4,
+
+#structure-content h4 + h5,
+#structure-content h6 + h5,
+
+#structure-content h5 + h6 {
+  margin-top: 1.25em;
+}
+*/
+
+#structure-content h2 {
+  padding-left: 1em;
+}
+
+#structure-content h3 {
+  padding-left: 1.5em;
+}
+
+#structure-content h4 {
+  padding-left: 2em;
+}
+
+#structure-content h5 {
+  padding-left: 2.5em;
+}
+
+#structure-content h6 {
+  padding-left: 3em;
+}
+
+.content {
   height: 30%;
   overflow-y: auto;
   border: 1px solid #ddd;
   padding: 5px;
+}
+
+#page-info-content {
+  height: 20%;
+}
+
+#structure-content {
+  height: 40%;
 }
