@@ -11,6 +11,16 @@ body > h2 {
   padding: 0;
 }
 
+.content {
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+#page-info-content {
+  height: 22%;
+}
+
 #page-info-content h3 {
   font-size: 110%;
   margin: 0;
@@ -20,84 +30,33 @@ body > h2 {
   margin: 0.5em 0;
 }
 
-#structure-content h1,
-#structure-content h2,
-#structure-content h3,
-#structure-content h4,
-#structure-content h5,
-#structure-content h6 {
-  font-size: 100%;
-  font-weight: normal;
-  margin: 1.25em 0 0.5em 0;
-}
-
-#structure-content h2 + h2,
-#structure-content h3 + h3,
-#structure-content h4 + h4,
-#structure-content h5 + h5,
-#structure-content h6 + h6 {
-  margin-top: 0.25em;
-}
-
-#structure-content *:first-child {
-  margin-top: 0.25em;
-}
-
-/*
-#structure-content h1 + h2,
-#structure-content h3 + h2,
-#structure-content h4 + h2,
-#structure-content h5 + h2,
-#structure-content h6 + h2,
-
-#structure-content h2 + h3,
-#structure-content h4 + h3,
-#structure-content h5 + h3,
-#structure-content h6 + h3,
-
-#structure-content h3 + h4,
-#structure-content h5 + h4,
-#structure-content h6 + h4,
-
-#structure-content h4 + h5,
-#structure-content h6 + h5,
-
-#structure-content h5 + h6 {
-  margin-top: 1.25em;
-}
-*/
-
-#structure-content h2 {
-  padding-left: 1em;
-}
-
-#structure-content h3 {
-  padding-left: 1.5em;
-}
-
-#structure-content h4 {
-  padding-left: 2em;
-}
-
-#structure-content h5 {
-  padding-left: 2.5em;
-}
-
-#structure-content h6 {
-  padding-left: 3em;
-}
-
-.content {
-  height: 30%;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 5px;
-}
-
-#page-info-content {
-  height: 20%;
-}
-
 #structure-content {
-  height: 40%;
+  height: 60%;
+  display: grid;
+  grid-template-columns: repeat(6, 1.75rem) 1fr;
+  grid-row-gap: 0.33em;
 }
+
+.h1-name, .h2-name, .h3-name, .h4-name, .h5-name, .h6-name {
+  color: #999;
+  font-size: 85%;
+  margin-top: 1.4px;
+}
+
+.h1-name { grid-column: 1; }
+.h1-text { grid-column: 2 / span 6; }
+
+.h2-name { grid-column: 2; }
+.h2-text { grid-column: 3 / span 5; }
+
+.h3-name { grid-column: 3; }
+.h3-text { grid-column: 4 / span 4; }
+
+.h4-name { grid-column: 4; }
+.h4-text { grid-column: 5 / span 3; }
+
+.h5-name { grid-column: 5; }
+.h5-text { grid-column: 6 / span 2; }
+
+.h6-name { grid-column: 6; }
+.h6-text { grid-column: 7; }

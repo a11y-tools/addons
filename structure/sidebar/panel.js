@@ -52,13 +52,24 @@ function getFormattedData (info) {
           <p>${info.url}</p>`;
 }
 
+function getClassNames (name) {
+  switch (name) {
+    case 'H1': return ['h1-name', 'h1-text'];
+    case 'H2': return ['h2-name', 'h2-text'];
+    case 'H3': return ['h3-name', 'h3-text'];
+    case 'H4': return ['h4-name', 'h4-text'];
+    case 'H5': return ['h5-name', 'h5-text'];
+    case 'H6': return ['h6-name', 'h6-text'];
+  }
+}
+
 function formatStructureInfo (infoList) {
   let html = '';
   for (let i = 0; i < infoList.length; i++) {
     let name = infoList[i].name, text = infoList[i].text;
+    let classNames = getClassNames(name);
     console.log(`${name}: ${text}`);
-    html += `<${name}><span style="color: #999">${name}: </span>${text}</${name}>`;
-    // html += `<${name} title="${name}">${text}</${name}>`;
+    html += `<div class="${classNames[0]}">${name}</div><div class="${classNames[1]}">${text}</div>`;
   }
   return html;
 }
