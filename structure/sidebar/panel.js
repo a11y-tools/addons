@@ -70,7 +70,7 @@ function formatStructureInfo (infoList) {
     let name = infoList[i].name, text = infoList[i].text;
     if (text.trim() === '') text = `<span class="empty">${emptyContent}</span>`;
     let classNames = getClassNames(name);
-    console.log(`${name}: ${text}`);
+    // console.log(`${name}: ${text}`);
     html += `<div class="${classNames[0]}">${name}</div><div class="${classNames[1]}">${text}</div>`;
   }
   return html;
