@@ -119,7 +119,11 @@ function isHeading (element) {
   return (allHeadings.indexOf(element.tagName) >= 0);
 }
 
-
+/*
+*   getInfo: Use the traverseDom function to recursively find each visible
+*   heading element in the document, collect its text content from visible
+*   child elements and store all relevant info in the returned infoList.
+*/
 function getInfo () {
   let infoList = [];
 
