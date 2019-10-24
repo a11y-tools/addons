@@ -2,9 +2,9 @@
 *   content.js
 */
 browser.runtime.sendMessage({
-  url: window.location.href,
+  infoList: getInfo(),
   title: document.title,
-  infoList: getInfo()
+  url: window.location.href
 });
 
 /*
@@ -112,35 +112,36 @@ function getContentsOfChildNodes (element, predicate) {
 }
 
 /*
-*   isHeadingElement: Helper function
+*   isHeading: Helper function
 */
-function isHeadingElement (name) {
+function isHeading (element) {
   let allHeadings = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-  return (allHeadings.indexOf(name) >= 0);
+  return (allHeadings.indexOf(element.tagName) >= 0);
 }
 
-/*
-*   getInfo: Utilize TreeWalker API to traverse DOM using filter functions.
-*/
+
 function getInfo () {
-
-  let treeWalker = document.createTreeWalker(
-    document.body,
-    NodeFilter.SHOW_ELEMENT,
-    { acceptNode: function (node) { return isHeadingElement(node.tagName) && isVisible(node) } },
-    false
-  );
-
   let infoList = [];
 
-  while (treeWalker.nextNode()) {
-    let node = treeWalker.currentNode;
-    let nodeInfo = {
-      name: node.tagName,
-      text: getContentsOfChildNodes(node, isVisible)
+  function traverseDom (startElement) {
+    // Process the child elements
+    for (let i = 0; i < startElement.children.length; i++) {
+      let element = startElement.children[i];
+      // Save information if element meets criteria
+      if (isHeading(element) && isVisible(element)) {
+        let headingInfo = {
+          name: element.tagName,
+          text: getContentsOfChildNodes(element, isVisible)
+        }
+        infoList.push(headingInfo);
+      }
+      else {
+        traverseDom(element);
+      }
     }
-    infoList.push(nodeInfo);
   }
 
+  // Start with body element and traverse entire DOM
+  traverseDom(document.body);
   return infoList;
 }
