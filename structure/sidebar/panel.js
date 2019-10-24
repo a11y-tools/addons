@@ -6,6 +6,7 @@ let pageInfoTitle        = getMessage("pageInfoTitle");
 let pageTitle            = getMessage("pageTitle");
 let pageUrl              = getMessage("pageUrl");
 let structureTitle       = getMessage("structureTitle");
+let emptyContent         = getMessage("emptyContent");
 let tabIsLoading         = getMessage("tabIsLoading");
 let protocolNotSupported = getMessage("protocolNotSupported");
 
@@ -67,6 +68,7 @@ function formatStructureInfo (infoList) {
   let html = '';
   for (let i = 0; i < infoList.length; i++) {
     let name = infoList[i].name, text = infoList[i].text;
+    if (text.trim() === '') text = `<span class="empty">${emptyContent}</span>`;
     let classNames = getClassNames(name);
     console.log(`${name}: ${text}`);
     html += `<div class="${classNames[0]}">${name}</div><div class="${classNames[1]}">${text}</div>`;
