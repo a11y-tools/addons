@@ -1,10 +1,11 @@
 var myWindowId;
 
 // Toggle console.log messages
-let debugBrowserFind = true;
-let debugFocusChange = false;
-let debugInfoList    = false;
-let debugOpenStatus  = false;
+let debugBrowserFind   = true;
+let debugFocusChange   = false;
+let debugInfoList      = false;
+let debugOpenStatus    = false;
+let debugUpdateContent = true;
 
 // Get message strings from locale-specific messages.json file
 let getMessage = browser.i18n.getMessage;
@@ -175,18 +176,14 @@ function handleTabUpdate (tabId, changeInfo, tab) {
 }
 
 /*
-*   Update sidebar content by running the content script and then
-*   referencing the contentInfo variable in the background script.
+*   Update sidebar content by running the content script. When the
+*   onMessage handler receives the message from the content script,
+*   it calls the updateSidebar function.
 */
 function updateContent () {
 
-  function onGotPage (page) {
-    updateSidebar(page.contentInfo);
-  }
-
   function onExecuted (result) {
-    let gettingPage = browser.runtime.getBackgroundPage();
-    gettingPage.then(onGotPage, onError);
+    if (debugUpdateContent) console.log('Content script has been invoked.');
   }
 
   browser.tabs.query({ windowId: myWindowId, active: true })
@@ -220,6 +217,15 @@ document.onselectionchange = function() {
     button.removeAttribute('disabled');
   }
 };
+
+/*
+*   Listen for messages from the content script
+*/
+browser.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    updateSidebar(request);
+  }
+);
 
 /*
 *   Update variable in background script used for toggling sidebar
