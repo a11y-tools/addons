@@ -1,5 +1,11 @@
 var myWindowId;
 
+// Toggle console.log messages
+let debugBrowserFind = true;
+let debugFocusChange = false;
+let debugInfoList    = false;
+let debugOpenStatus  = false;
+
 // Get message strings from locale-specific messages.json file
 let getMessage = browser.i18n.getMessage;
 let pageInfoTitle        = getMessage("pageInfoTitle");
@@ -20,21 +26,60 @@ browser.windows.getCurrent({ populate: true }).then( (windowInfo) => {
 });
 
 /*
+*   Generic error handler
+*/
+function onError (error) {
+  console.log(`Error: ${error}`);
+}
+
+/*
+*   Find and highlight the heading by in the active tab by searching for the
+*   selected text.
+*   Note: This handler will only be called when there is an actual selection,
+*   due to the action of the document.onselectionchange handler, which enables
+*   the search button only when a selection has been made.
+*/
+function findSelectedHeading () {
+  function onFoundSelection (results) {
+    if (debugBrowserFind) {
+      console.log(`Found ${results.count} instance(s) of '${selection}'`);
+    }
+    if (results.count > 0) {
+      browser.find.highlightResults();
+    }
+  }
+
+  browser.find.removeHighlighting();
+  let selection = document.getSelection().toString();
+  let searching = browser.find.find(selection);
+  searching.then(onFoundSelection, onError);
+}
+
+/*
+*   Add listeners for the search and clear buttons.
+*/
+document.getElementById('search-button').addEventListener('click', findSelectedHeading);
+
+document.getElementById('clear-button').addEventListener('click', function () {
+  browser.find.removeHighlighting();
+});
+
+/*
 *   Handle window focus change events by checking whether the sidebar is
 *   open in the newly focused window, and if so, save the new window ID
 *   and update the sidebar content.
 */
 browser.windows.onFocusChanged.addListener((windowId) => {
-  console.log(`windowId: ${windowId}`);
+  if (debugFocusChange) console.log(`windowId: ${windowId}`);
   function onInvalidId (error) {
-    // console.log(`onInvalidId: ${error}`);
+    if (debugFocusChange) console.log(`onInvalidId: ${error}`);
   }
 
   function onGotStatus (result) {
     if (result) {
       myWindowId = windowId;
       updateContent();
-      console.log('Updating for onFocusChanged to window: ' + myWindowId);
+      if (debugFocusChange) console.log('Updating for onFocusChanged to window: ' + myWindowId);
     }
   }
 
@@ -53,6 +98,10 @@ function getFormattedData (info) {
           <p>${info.url}</p>`;
 }
 
+/*
+*   Format the heading info as HTML, with the appropriate class names for
+*   the grid layout.
+*/
 function getClassNames (name) {
   switch (name) {
     case 'H1': return ['h1-name', 'h1-text'];
@@ -70,7 +119,7 @@ function formatStructureInfo (infoList) {
     let name = infoList[i].name, text = infoList[i].text;
     if (text.trim() === '') text = `<span class="empty">${emptyContent}</span>`;
     let classNames = getClassNames(name);
-    // console.log(`${name}: ${text}`);
+    if (debugInfoList) console.log(`${name}: ${text}`);
     html += `<div class="${classNames[0]}">${name}</div><div class="${classNames[1]}">${text}</div>`;
   }
   return html;
@@ -96,13 +145,6 @@ function updateSidebar (info) {
     pageInfo.textContent = info;
     structure.textContent = '';
   }
-}
-
-/*
-*   Generic error handler
-*/
-function onError (error) {
-  console.log(`Error: ${error}`);
 }
 
 /*
@@ -157,12 +199,29 @@ function updateContent () {
 }
 
 /*
+*   Manage the 'disabled' state of the search button by handling text
+*   selection change events in the sidebar structure-content div.
+*/
+document.onselectionchange = function() {
+  let selection = document.getSelection().toString();
+  let button = document.getElementById('search-button');
+
+  // button.disabled = (selection === '');
+  if (selection === '') {
+    button.setAttribute('disabled', true);
+  }
+  else {
+    button.removeAttribute('disabled');
+  }
+};
+
+/*
 *   Update variable in background script used for toggling sidebar
 */
 function updateOpenStatus (isOpen) {
   function onGotPage (page) {
     page.sidebarIsOpen = isOpen;
-    console.log(`open status: ${isOpen}`);
+    if (debugOpenStatus) console.log(`open status: ${isOpen}`);
   }
 
   let gettingPage = browser.runtime.getBackgroundPage();

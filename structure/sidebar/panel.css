@@ -46,7 +46,11 @@ body > h2 {
 }
 
 .h1-text, .h2-text, .h3-text, .h4-text, .h5-text, .h6-text {
-  user-select: all;
+  /*
+  *   Change user-select value to 'all' if heading text content problems
+  *   are resolved (by using getElementContent and isVisible functions).
+  */
+  user-select: text;
 }
 
 .h1-name { grid-column: 1; }
@@ -69,4 +73,31 @@ body > h2 {
 
 span.empty {
   color: #999;
+}
+
+button.search {
+  font-size: 12px;
+  border: 0;
+  border-radius: 2px;
+  padding: 4px 8px;
+  margin-top: 15px;
+  background: rgba(12, 12, 13, 0.1);
+}
+
+button.search:hover {
+  background: rgba(12, 12, 13, 0.2);
+}
+
+button.search:active {
+  background: rgba(12, 12, 13, 0.3);
+}
+
+button.search:focus {
+  box-shadow: 0 0 0 1px #0a84ff inset,
+              0 0 0 1px #0a84ff,
+              0 0 0 4px rgba(10, 132, 255, 0.3);
+}
+
+button.search:last-child {
+  margin-left: 8px;
 }
