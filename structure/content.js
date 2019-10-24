@@ -13,24 +13,21 @@ browser.runtime.sendMessage({
 *   of its ancestors has properties set that affect its visibility.
 */
 function isVisible (element) {
+  if (element.nodeType === Node.DOCUMENT_NODE) return true;
 
-  function isVisibleRec (el) {
-    if (el.nodeType === Node.DOCUMENT_NODE) return true;
-
-    let computedStyle = window.getComputedStyle(el, null);
-    let display = computedStyle.getPropertyValue('display');
+  if (element.nodeType === Node.ELEMENT_NODE) {
+    let computedStyle = window.getComputedStyle(element, null);
+    let display    = computedStyle.getPropertyValue('display');
     let visibility = computedStyle.getPropertyValue('visibility');
-    let hidden = el.getAttribute('hidden');
-    let ariaHidden = el.getAttribute('aria-hidden');
+    let hidden     = element.getAttribute('hidden');
+    let ariaHidden = element.getAttribute('aria-hidden');
 
     if ((display === 'none') || (visibility === 'hidden') ||
         (hidden !== null) || (ariaHidden === 'true')) {
       return false;
     }
-    return isVisibleRec(el.parentNode);
   }
-
-  return isVisibleRec(element);
+  return isVisible(element.parentNode);
 }
 
 /*
