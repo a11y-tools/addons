@@ -34,6 +34,11 @@
     "description": "Message indicating that DOM element has no text content."
   },
 
+  "noHeadingElements": {
+    "message": "No HTML heading elements found!",
+    "description": "Message indicating that no heading elements were found in the document."
+  },
+
   "tabIsLoading": {
     "message": "Updating...",
     "description": "Message indicating that content in the sidebar panel is being updated."

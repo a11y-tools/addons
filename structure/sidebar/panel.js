@@ -13,6 +13,7 @@ let pageTitle            = getMessage("pageTitle");
 let pageUrl              = getMessage("pageUrl");
 let structureTitle       = getMessage("structureTitle");
 let emptyContent         = getMessage("emptyContent");
+let noHeadingElements    = getMessage("noHeadingElements");
 let tabIsLoading         = getMessage("tabIsLoading");
 let protocolNotSupported = getMessage("protocolNotSupported");
 
@@ -139,7 +140,12 @@ function updateSidebar (info) {
   // page-info and structure content
   if (typeof info === 'object') {
     pageInfo.innerHTML = getFormattedData(info);
-    structure.innerHTML = formatStructureInfo(info.infoList);
+    if (info.infoList.length) {
+      structure.innerHTML =  formatStructureInfo(info.infoList);
+    }
+    else {
+      structure.innerHTML = `<div class="grid-message">${noHeadingElements}</div>`;
+    }
   }
   else {
     pageInfo.textContent = info;
