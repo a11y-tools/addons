@@ -7,8 +7,6 @@ browser.runtime.sendMessage({
   infoList: getInfo()
 });
 
-if (true) console.log(window.location.href);
-
 function getInfo () {
   function isVisible (element) {
 
