@@ -69,7 +69,6 @@ document.getElementById('clear-button').addEventListener('click', function () {
 *   and update the sidebar content.
 */
 browser.windows.onFocusChanged.addListener((windowId) => {
-
   if (windowId !== myWindowId) {
     let checkingOpenStatus = browser.sidebarAction.isOpen({ windowId });
     checkingOpenStatus.then(onGotStatus, onInvalidId);
@@ -177,7 +176,6 @@ function handleTabUpdated (tabId, changeInfo, tab) {
 *   Handle tabs.onActivated event
 */
 function handleTabActivated (activeInfo) {
-  let logInfo = true;
   if (logInfo) console.log(activeInfo);
 
   updateContent('handleTabActivated');
@@ -189,8 +187,6 @@ function handleTabActivated (activeInfo) {
 *   it calls the updateSidebar function.
 */
 function updateContent (callerFn) {
-  let logInfo = true;
-
   browser.tabs.query({ windowId: myWindowId, active: true })
   .then((tabs) => {
     let tab = tabs[0];
