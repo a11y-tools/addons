@@ -1,11 +1,5 @@
 var myWindowId;
-
-// Toggle console.log messages
-let debugBrowserFind   = true;
-let debugFocusChange   = false;
-let debugInfoList      = false;
-let debugOpenStatus    = false;
-let debugUpdateContent = true;
+var logInfo = false;
 
 // Get message strings from locale-specific messages.json file
 let getMessage = browser.i18n.getMessage;
@@ -24,7 +18,7 @@ let protocolNotSupported = getMessage("protocolNotSupported");
 */
 browser.windows.getCurrent({ populate: true }).then( (windowInfo) => {
   myWindowId = windowInfo.id;
-  updateContent();
+  updateContent('getCurrent');
 });
 
 /*
@@ -42,12 +36,15 @@ function onError (error) {
 *   the search button only when a selection has been made.
 */
 function findSelectedHeading () {
+  let logInfo = true;
+
   function onFoundSelection (results) {
-    if (debugBrowserFind) {
-      console.log(`Found ${results.count} instance(s) of '${selection}'`);
-    }
     if (results.count > 0) {
       browser.find.highlightResults();
+    }
+
+    if (logInfo) {
+      console.log(`Found ${results.count} instance(s) of '${selection}'`);
     }
   }
 
@@ -72,21 +69,23 @@ document.getElementById('clear-button').addEventListener('click', function () {
 *   and update the sidebar content.
 */
 browser.windows.onFocusChanged.addListener((windowId) => {
-  if (debugFocusChange) console.log(`windowId: ${windowId}`);
-  function onInvalidId (error) {
-    if (debugFocusChange) console.log(`onInvalidId: ${error}`);
+
+  if (windowId !== myWindowId) {
+    let checkingOpenStatus = browser.sidebarAction.isOpen({ windowId });
+    checkingOpenStatus.then(onGotStatus, onInvalidId);
   }
 
   function onGotStatus (result) {
     if (result) {
       myWindowId = windowId;
-      updateContent();
-      if (debugFocusChange) console.log('Updating for onFocusChanged to window: ' + myWindowId);
+      updateContent('onFocusChanged');
+      if (logInfo) console.log(`Focus changed to window: ${myWindowId}`);
     }
   }
 
-  let checkingOpenStatus = browser.sidebarAction.isOpen({ windowId });
-  checkingOpenStatus.then(onGotStatus, onInvalidId);
+  function onInvalidId (error) {
+    if (logInfo) console.log(`onInvalidId: ${error}`);
+  }
 });
 
 /*
@@ -121,7 +120,6 @@ function formatStructureInfo (infoList) {
     let name = infoList[i].name, text = infoList[i].text;
     if (text.trim() === '') text = `<span class="empty">${emptyContent}</span>`;
     let classNames = getClassNames(name);
-    if (debugInfoList) console.log(`${name}: ${text}`);
     html += `<div class="${classNames[0]}">${name}</div><div class="${classNames[1]}">${text}</div>`;
   }
   return html;
@@ -155,18 +153,18 @@ function updateSidebar (info) {
 }
 
 /*
-*   Handle tabs.onUpdated event only when status is 'complete':
-*   There can be numerous calls to this event handler, as multiple
-*   events are triggered while the tab is loading the page.
+*   Handle tabs.onUpdated event, but only when status is 'complete'. There
+*   can be numerous calls to this event handler, as multiple events are
+*   triggered while the tab is updating, e.g. status is 'loading'.
 */
 let timeoutID;
-function handleTabUpdate (tabId, changeInfo, tab) {
+function handleTabUpdated (tabId, changeInfo, tab) {
   // Skip content update when new page is loaded in background tab
   if (!tab.active) return;
 
   clearTimeout(timeoutID);
   if (changeInfo.status === "complete") {
-    updateContent();
+    updateContent('handleTabUpdated');
   }
   else {
     timeoutID = setTimeout(function () {
@@ -176,15 +174,22 @@ function handleTabUpdate (tabId, changeInfo, tab) {
 }
 
 /*
+*   Handle tabs.onActivated event
+*/
+function handleTabActivated (activeInfo) {
+  let logInfo = true;
+  if (logInfo) console.log(activeInfo);
+
+  updateContent('handleTabActivated');
+}
+
+/*
 *   Update sidebar content by running the content script. When the
 *   onMessage handler receives the message from the content script,
 *   it calls the updateSidebar function.
 */
-function updateContent () {
-
-  function onExecuted (result) {
-    if (debugUpdateContent) console.log('Content script has been invoked.');
-  }
+function updateContent (callerFn) {
+  let logInfo = true;
 
   browser.tabs.query({ windowId: myWindowId, active: true })
   .then((tabs) => {
@@ -199,6 +204,10 @@ function updateContent () {
       executing.then(onExecuted, onError);
     }
   });
+
+  function onExecuted (result) {
+    if (logInfo) console.log(`Content script invoked by ${callerFn}`);
+  }
 }
 
 /*
@@ -233,7 +242,7 @@ browser.runtime.onMessage.addListener(
 function updateOpenStatus (isOpen) {
   function onGotPage (page) {
     page.sidebarIsOpen = isOpen;
-    if (debugOpenStatus) console.log(`open status: ${isOpen}`);
+    if (logInfo) console.log(`open status: ${isOpen}`);
   }
 
   let gettingPage = browser.runtime.getBackgroundPage();
@@ -245,12 +254,12 @@ function updateOpenStatus (isOpen) {
 */
 window.addEventListener("load",   function (e) {
   updateOpenStatus(true);
-  browser.tabs.onUpdated.addListener(handleTabUpdate, { properties: ["status"] });
-  browser.tabs.onActivated.addListener(updateContent);
+  browser.tabs.onUpdated.addListener(handleTabUpdated, { properties: ["status"] });
+  browser.tabs.onActivated.addListener(handleTabActivated);
 });
 
 window.addEventListener("unload", function (e) {
   updateOpenStatus(false);
-  browser.tabs.onUpdated.removeListener(handleTabUpdate);
-  browser.tabs.onActivated.removeListener(updateContent);
+  browser.tabs.onUpdated.removeListener(handleTabUpdated);
+  browser.tabs.onActivated.removeListener(handleTabActivated);
 });
