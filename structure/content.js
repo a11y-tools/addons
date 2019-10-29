@@ -31,89 +31,35 @@ function isVisible (element) {
 }
 
 /*
-*   getNodeContents: Recursively process element and text nodes by aggregating
-*   their text values for an ARIA text equivalent calculation.
+*   isHeading: Determine whether element is a heading based on its tagName.
 */
-function getNodeContents (node) {
-  let contents = '';
-
-  switch (node.nodeType) {
-    case Node.ELEMENT_NODE:
-      if (node.hasChildNodes()) {
-        let children = node.childNodes,
-            arr = [];
-
-        for (let i = 0; i < children.length; i++) {
-          let nc = getNodeContents(children[i]);
-          if (nc.length) arr.push(nc);
-        }
-
-        contents = (arr.length) ? arr.join(' ') : '';
-      }
-      break;
-
-    case Node.TEXT_NODE:
-      contents = node.textContent.trim();
-  }
-
-  return contents;
+function isHeading (element) {
+  let headingNames = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+  return (headingNames.indexOf(element.tagName) >= 0);
 }
 
 /*
-*   getElementContents: Construct the ARIA text alternative for element by
-*   processing its element and text node descendants and then adding any CSS-
-*   generated content if present.
+*   getDescendantTextContent: Collect the textContent values of child text
+*   nodes, and descendant text nodes of child elements that meet the predicate
+*   condition, by storing the values in the results array.
 */
-function getElementContents (element) {
-  let result = '';
+function getDescendantTextContent (node, predicate, results) {
+  // Process the child nodes
+  for (let i = 0; i < node.childNodes.length; i++) {
+    let child = node.childNodes[i];
 
-  if (element.hasChildNodes()) {
-    let children = element.childNodes,
-        arrayOfStrings = [];
-
-    for (let i = 0; i < children.length; i++) {
-      let contents = getNodeContents(children[i]);
-      if (contents.length) arrayOfStrings.push(contents);
-    }
-
-    result = (arrayOfStrings.length) ? arrayOfStrings.join(' ') : '';
-  }
-
-  return result;
-}
-
-/*
-*   getContentsOfChildNodes: Using predicate function for filtering element
-*   nodes, collect text content from all child nodes of element.
-*/
-function getContentsOfChildNodes (element, predicate) {
-  let arr = [], content;
-
-  Array.prototype.forEach.call(element.childNodes, function (node) {
-    switch (node.nodeType) {
+    switch (child.nodeType) {
       case (Node.ELEMENT_NODE):
-        if (predicate(node)) {
-          content = getElementContents(node);
-          if (content.length) arr.push(content);
+        if (predicate(child)) {
+          getDescendantTextContent(child, predicate, results);
         }
         break;
       case (Node.TEXT_NODE):
-        content = node.textContent.trim();
-        if (content.length) arr.push(content);
+        let content = child.textContent.trim();
+        if (content.length) { results.push(content); }
         break;
     }
-  });
-
-  if (arr.length) return arr.join(' ');
-  return '';
-}
-
-/*
-*   isHeading: Helper function
-*/
-function isHeading (element) {
-  let allHeadings = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-  return (allHeadings.indexOf(element.tagName) >= 0);
+  }
 }
 
 /*
@@ -130,9 +76,11 @@ function getInfo () {
       let element = startElement.children[i];
       // Save information if element meets criteria
       if (isHeading(element) && isVisible(element)) {
+        let results = [];
+        getDescendantTextContent(element, isVisible, results);
         let headingInfo = {
           name: element.tagName,
-          text: getContentsOfChildNodes(element, isVisible)
+          text: results.length ? results.join(' ') : ''
         }
         infoList.push(headingInfo);
       }
