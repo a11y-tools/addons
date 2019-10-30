@@ -29,8 +29,18 @@ function onError (error) {
 }
 
 /*
-*   Find and highlight the heading by in the active tab by searching for the
-*   selected text.
+*   findSelectedHeading: This is currently using two different features to
+*   accomplish its goal, which is to highlight the heading in the page and
+*   scroll the window such that the highlighted heading is in view.
+*
+*   1. The browser.find API/methods .find  and .highlightResults are used
+*      for highlighting the heading, until a better method is implemented.
+*      This does not currently work in Firefox Developer Edition.
+*   2. Scrolling the window to the selected heading is accomplished via the
+*      message sent to the content script, which includes the index of the
+*      heading element reference, stored in the headingRefs array, which is
+*      retrieved and used to call the element.scrollIntoView method.
+*
 *   Note: This handler will only be called when there is an actual selection,
 *   due to the action of the document.onselectionchange handler, which enables
 *   the search button only when a selection has been made.
