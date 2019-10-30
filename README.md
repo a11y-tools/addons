@@ -56,7 +56,8 @@ adding the following new features:
   stores its data in the `contentInfo` variable.
 * The function `updateContent` in `panel.js` calls the content script, and
   waits until the Promise it receives acknowledges that the script has executed
-  before it accesses the data sent to the background script.
+  before it accesses the data stored in the background script's `contentInfo`
+  variable.
 * The event listeners for tabs.onUpdated and tabs.onActivated are removed when
   the sidebar is closed.
 * The tabs.onUpdated event listener now has a filter that specifies that only
@@ -65,3 +66,38 @@ adding the following new features:
   created that examines the `status` property: When its value is "complete" it
   calls the `updateContent` function; otherwise it displays the `tabIsLoading`
   message using a timeout to avoid jerkiness with sidebar content updates.
+* Missing from previous prototypes was an `onFocusChanged` handler, which has
+  now been added in `panel.js`. This handles the situation when a link is
+  opened in a new window. It is interesting to note that the sidebar will
+  always display the same information when there is more than one window, i.e.
+  the information for the active tab, even if it's in a different window.
+
+### 4. headings
+
+This prototype builds on the feature set of the `traversal` prototype by
+adding the following new features:
+
+* The sidebar now displays headings information for the active tab in a box
+  labeled `Headings`, using CSS grid layout features. Each heading item has
+  a prefix label indicating its level, and is indented horizontally based on
+  its level.
+* The items in the `Headings` box are scrollable, and each item is selectable.
+* There are two buttons below the `Headings` box, one labeled `Highlight
+  Selected` and the other `Remove Highlighting`, each with its own event
+  handler.
+* The handler functions for the highlight buttons use the `browser.find` API,
+  which only partially works in production Firefox, and is throwing errors in
+  FDE when `browser.find.highlightResults` is called. In the former case, the
+  call does not result in scrolling to the highlighted results.
+* Messaging now takes place directly between `content.js` and `panel.js`, so
+  the `contentInfo` variable in `background.js` was removed.
+* When the `panel.js` function `updateContent` is called, it executes the
+  content script. Its `onExecuted` callback only logs caller information, as
+  the `panel.js` script now waits for the message from `content.js` before
+  calling the `updateSidebar` function with the heading information contained
+  in the message.
+* The content script functions have been rewritten: The `getInfo` function now
+  includes a nested function named `traverseDom` that uses the `DOM` API
+  directly, replacing the use of the `TreeWalker` API. Another new function,
+  `getDescendantTextContent`, recursively handles the collection of text
+  content for each heading.
