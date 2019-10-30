@@ -38,6 +38,18 @@ function onError (error) {
 function findSelectedHeading () {
   let logInfo = true;
 
+  let selection = document.getSelection();
+  let data = { id: 'find', index: selection.anchorNode.dataset.index };
+
+  browser.tabs.query({ windowId: myWindowId, active: true })
+  .then((tabs) => {
+    browser.tabs.sendMessage(tabs[0].id, data);
+  });
+
+  browser.find.removeHighlighting();
+  let searching = browser.find.find(selection.toString());
+  searching.then(onFoundSelection, onError);
+
   function onFoundSelection (results) {
     if (results.count > 0) {
       browser.find.highlightResults();
@@ -47,11 +59,6 @@ function findSelectedHeading () {
       console.log(`Found ${results.count} instance(s) of '${selection}'`);
     }
   }
-
-  browser.find.removeHighlighting();
-  let selection = document.getSelection().toString();
-  let searching = browser.find.find(selection);
-  searching.then(onFoundSelection, onError);
 }
 
 /*
@@ -119,7 +126,8 @@ function formatStructureInfo (infoList) {
     let name = infoList[i].name, text = infoList[i].text;
     if (text.trim() === '') text = `<span class="empty">${emptyContent}</span>`;
     let classNames = getClassNames(name);
-    html += `<div class="${classNames[0]}">${name}</div><div class="${classNames[1]}">${text}</div>`;
+    html += `<div class="${classNames[0]}">${name}</div><div \
+    class="${classNames[1]}" data-index="${i}">${text}</div>`;
   }
   return html;
 }
@@ -211,11 +219,10 @@ function updateContent (callerFn) {
 *   selection change events in the sidebar structure-content div.
 */
 document.onselectionchange = function() {
-  let selection = document.getSelection().toString();
+  let selection = document.getSelection();
   let button = document.getElementById('search-button');
 
-  // button.disabled = (selection === '');
-  if (selection === '') {
+  if (selection.toString() === '') {
     button.setAttribute('disabled', true);
   }
   else {

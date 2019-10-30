@@ -1,10 +1,19 @@
 /*
 *   content.js
 */
+var headingRefs;
+
 browser.runtime.sendMessage({
   infoList: getInfo(),
   title: document.title,
   url: window.location.href
+});
+
+browser.runtime.onMessage.addListener (
+  function (request, sender, sendResponse) {
+    if (request.id !== 'find') return;
+    let element = headingRefs[request.index];
+    element.scrollIntoView({ block: 'center', behavior: 'smooth' });
 });
 
 /*
@@ -70,6 +79,9 @@ function getDescendantTextContent (node, predicate, results) {
 function getInfo () {
   let infoList = [];
 
+  // Reset headingRefs array
+  headingRefs = [];
+
   function traverseDom (startElement) {
     // Process the child elements
     for (let i = 0; i < startElement.children.length; i++) {
@@ -83,6 +95,7 @@ function getInfo () {
           text: results.length ? results.join(' ') : ''
         }
         infoList.push(headingInfo);
+        headingRefs.push(element);
       }
       else {
         traverseDom(element);
