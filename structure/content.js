@@ -13,8 +13,24 @@ browser.runtime.onMessage.addListener (
   function (request, sender, sendResponse) {
     if (request.id !== 'find') return;
     let element = headingRefs[request.index];
-    element.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (isInPage(element)) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    else {
+      console.log('Element was removed from DOM: ' + element)
+    }
 });
+
+/*
+*   isInPage: This function checks to see if an element is a descendant of
+*   the page's body element. Because 'contains' is inclusive, isInPage returns
+*   false when the argument is the body element itself.
+*   MDN: https://developer.mozilla.org/en-US/docs/Web/API/Node/contains
+*/
+function isInPage (element) {
+  if (element === document.body) return false;
+  return document.body.contains(element);
+}
 
 /*
 *   isVisible: Recursively check element properties from getComputedStyle
