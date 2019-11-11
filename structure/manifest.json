@@ -12,7 +12,7 @@
   ],
 
   "background": {
-    "scripts": [ "background.js" ]
+    "scripts": [ "background.js", "listbox.js" ]
   },
 
   "browser_action": {
