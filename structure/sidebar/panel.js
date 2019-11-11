@@ -154,13 +154,12 @@ function updateSidebar (info) {
   document.getElementById('page-info-title').textContent = pageInfoTitle;
   document.getElementById('structure-title').textContent = structureTitle;
 
-  function onGotPage (page) {
-    listBox = new page.ListBox(structure);
-  }
-
   // page-info and structure content
   if (typeof info === 'object') {
+    // Update the page-info-content box
     pageInfo.innerHTML = getFormattedData(info);
+
+    // Update the structure-content box
     if (info.infoList.length) {
       structure.innerHTML =  formatStructureInfo(info.infoList);
       let gettingPage = browser.runtime.getBackgroundPage();
@@ -173,6 +172,11 @@ function updateSidebar (info) {
   else {
     pageInfo.textContent = info;
     structure.textContent = '';
+  }
+
+  // Reset listBox object after structure.innerHTML is updated
+  function onGotPage (page) {
+    listBox = new page.ListBox(structure);
   }
 }
 

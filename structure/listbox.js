@@ -1,13 +1,13 @@
 /*
 *   ListBox: Object that encapsulates the state and behavior of a listbox
-*   container that contains listitem elements such that proper support for
-*   keyboard navigation is provided.
+*   container with listitem elements in order to provide keyboard support
+*   as recommended by ARIA Authoring Practices.
 *
 *   Desired behavior:
-*   1. Handle up-arrow, down-arrow, left-arrow, right-arrow, home and end key
-*      presses to move the selection among listItems.
-*   2. Handle return and space key presses to initiate action associated with
-*      selected listItem.
+*   1. Handle up-arrow, down-arrow, left-arrow, right-arrow, home, end,
+*      page-up and page-down key presses to move focus among listItems.
+*   2. Handle return and space key presses to initiate the desired action
+*      associated with the selected listItem.
 *
 *   Functionality/methods:
 *   1. Initialize the DOM elements (the container and its children) with the
