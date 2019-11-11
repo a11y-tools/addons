@@ -25,6 +25,8 @@ function ListBox (domNode) {
   this.keyCode = Object.freeze({
     'RETURN'   : 13,
     'SPACE'    : 32,
+    'PAGEUP'   : 33,
+    'PAGEDOWN' : 34,
     'END'      : 35,
     'HOME'     : 36,
     'LEFT'     : 37,
@@ -37,24 +39,28 @@ function ListBox (domNode) {
   this.init();
 }
 
-function ListBox.prototype.init () {
+ListBox.prototype.init = function () {
   // Set ARIA role for listbox container
   this.container.setAttribute('role', 'listbox');
 
-  // Initialize each listItem and store it in listItems array
+  // Configure each listItem and store it in listItems array
   let children = this.container.children;
+
   for (let i = 0; i < children.length; i++) {
     let listItem = children[i];
-    this.initListItem(listItem);
+    this.configure(listItem);
     this.listItems.push(listItem);
   }
 
   // Assign firstItem and lastItem
-  this.firstItem = listItems[0];
-  this.lastItem  = listItems[listItems.length - 1];
-}
+  this.firstItem = this.listItems[0];
+  this.lastItem  = this.listItems[this.listItems.length - 1];
 
-function ListBox.prototype.validate () {
+  // Handle container focus
+  this.container.addEventListener('focus', this.setFocusFirstItem.bind(this));
+};
+
+ListBox.prototype.validate = function () {
   let container = this.container;
 
   function containerIsDomElement () {
@@ -73,9 +79,9 @@ function ListBox.prototype.validate () {
 
   containerIsDomElement();
   containerHasChildElements();
-}
+};
 
-function ListBox.prototype.initListitem (listItem) {
+ListBox.prototype.configure = function (listItem) {
   // Set ARIA role and tabIndex
   listItem.setAttribute('role', 'listitem');
   listItem.tabIndex = -1;
@@ -83,32 +89,34 @@ function ListBox.prototype.initListitem (listItem) {
   // Assign event handlers
   listItem.addEventListener('keydown', this.handleKeydown.bind(this));
   // listItem.addEventListener('click', this.handleClick.bind(this));
-}
+};
 
-function ListBox.prototype.handleKeydown (event) {
+ListBox.prototype.handleKeydown = function (event) {
   let flag = false;
 
   switch (event.keyCode) {
 
     case this.keyCode.UP:
     case this.keyCode.LEFT:
-      this.setFocusToPrevItem(this);
+      this.setFocusPrevItem(event.target);
       flag = true;
       break;
 
     case this.keyCode.DOWN:
     case this.keyCode.RIGHT:
-      this.setFocusToNextItem(this);
+      this.setFocusNextItem(event.target);
       flag = true;
       break;
 
     case this.keyCode.HOME:
-      this.firstItem.focus();
+    case this.keyCode.PAGEUP:
+      this.setFocusFirstItem();
       flag = true;
       break;
 
     case this.keyCode.END:
-      this.lastItem.focus();
+    case this.keyCode.PAGEDOWN:
+      this.setFocusLastItem();
       flag = true;
       break;
   }
@@ -117,24 +125,26 @@ function ListBox.prototype.handleKeydown (event) {
     event.stopPropagation();
     event.preventDefault();
   }
-}
+};
 
-function ListBox.prototype.setFocusPrevItem (currentItem) {
-  if (currentItem === this.firstItem) {
-    this.lastItem.focus();
-  }
-  else {
-    let index = this.listItems.indexOf(currentItem);
-    this.listItems[index - 1].focus();
-  }
-}
+ListBox.prototype.setFocusFirstItem = function () {
+  this.firstItem.focus();
+};
 
-function ListBox.prototype.setFocusNextItem (currentItem) {
-  if (currentItem === this.lastItem) {
-    this.firstItem.focus();
-  }
-  else {
-    let index = this.listItems.indexOf(currentItem);
-    this.listItems[index + 1].focus();
-  }
-}
+ListBox.prototype.setFocusLastItem = function () {
+  this.lastItem.focus();
+};
+
+ListBox.prototype.setFocusPrevItem = function (currentItem) {
+  if (currentItem === this.firstItem) return;
+
+  let index = this.listItems.indexOf(currentItem);
+  this.listItems[index - 1].focus();
+};
+
+ListBox.prototype.setFocusNextItem = function (currentItem) {
+  if (currentItem === this.lastItem) return;
+
+  let index = this.listItems.indexOf(currentItem);
+  this.listItems[index + 1].focus();
+};
