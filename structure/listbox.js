@@ -40,9 +40,9 @@ function ListBox (domNode) {
   this.init();
 }
 
-/********************
-*     validate      *
-********************/
+//-------------------
+//     validate
+//-------------------
 
 ListBox.prototype.validate = function () {
   let container = this.container;
@@ -65,9 +65,9 @@ ListBox.prototype.validate = function () {
   containerHasChildElements();
 };
 
-/********************
-*       init        *
-********************/
+//-------------------
+//       init
+//-------------------
 
 ListBox.prototype.init = function () {
   // Set ARIA role for listbox container
@@ -90,9 +90,9 @@ ListBox.prototype.init = function () {
   this.container.addEventListener('keydown', this.handleContainerKeydown.bind(this));
 };
 
-/********************
-*     configure     *
-********************/
+//-------------------
+//     configure
+//-------------------
 
 ListBox.prototype.configure = function (listItem) {
   // Set ARIA role and tabIndex
@@ -100,13 +100,13 @@ ListBox.prototype.configure = function (listItem) {
   listItem.tabIndex = -1;
 
   // Assign event handlers
-  listItem.addEventListener('keydown', this.handleKeydown.bind(this));
+  listItem.addEventListener('keydown', this.handleItemKeydown.bind(this));
   // listItem.addEventListener('click', this.handleClick.bind(this));
 };
 
-/*****************************
-*   handleContainerKeydown   *
-*****************************/
+//----------------------------
+//   handleContainerKeydown
+//----------------------------
 
 ListBox.prototype.handleContainerKeydown = function (event) {
   let flag = false;
@@ -128,11 +128,11 @@ ListBox.prototype.handleContainerKeydown = function (event) {
   }
 }
 
-/********************
-*   handleKeydown   *
-********************/
+//-----------------------
+//   handleItemKeydown
+//-----------------------
 
-ListBox.prototype.handleKeydown = function (event) {
+ListBox.prototype.handleItemKeydown = function (event) {
   let flag = false;
 
   switch (event.keyCode) {
@@ -176,9 +176,9 @@ ListBox.prototype.handleKeydown = function (event) {
   }
 };
 
-/********************
-*     setFocus      *
-********************/
+//----------------------
+//   setFocus methods
+//----------------------
 
 ListBox.prototype.setFocusFirstItem = function () {
   this.firstItem.focus();
