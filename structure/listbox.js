@@ -17,10 +17,11 @@
 */
 
 function ListBox (domNode) {
-  this.container  = domNode;
-  this.listItems  = [];
-  this.firstItem  = null;
-  this.lastItem   = null;
+  this.container = domNode;
+  this.listItems = [];
+  this.firstItem = null;
+  this.lastItem  = null;
+  this.increment = 8;
 
   this.keyCode = Object.freeze({
     'RETURN'   : 13,
@@ -108,14 +109,22 @@ ListBox.prototype.handleKeydown = function (event) {
       flag = true;
       break;
 
-    case this.keyCode.HOME:
     case this.keyCode.PAGEUP:
+      this.setFocusPrevPage(event.target);
+      flag = true;
+      break;
+
+    case this.keyCode.PAGEDOWN:
+      this.setFocusNextPage(event.target);
+      flag = true;
+      break;
+
+    case this.keyCode.HOME:
       this.setFocusFirstItem();
       flag = true;
       break;
 
     case this.keyCode.END:
-    case this.keyCode.PAGEDOWN:
       this.setFocusLastItem();
       flag = true;
       break;
@@ -148,3 +157,31 @@ ListBox.prototype.setFocusNextItem = function (currentItem) {
   let index = this.listItems.indexOf(currentItem);
   this.listItems[index + 1].focus();
 };
+
+ListBox.prototype.setFocusPrevPage = function (currentItem) {
+  if (currentItem === this.firstItem) return;
+
+  let index = this.listItems.indexOf(currentItem);
+  let tgtIndex = index - this.increment;
+
+  if (tgtIndex < 0) {
+    this.firstItem.focus();
+  }
+  else {
+    this.listItems[tgtIndex].focus();
+  }
+}
+
+ListBox.prototype.setFocusNextPage = function (currentItem) {
+  if (currentItem === this.lastItem) return;
+
+  let index = this.listItems.indexOf(currentItem);
+  let tgtIndex = index + this.increment;
+
+  if (tgtIndex > this.listItems.length - 1) {
+    this.lastItem.focus();
+  }
+  else {
+    this.listItems[tgtIndex].focus();
+  }
+}
