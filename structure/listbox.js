@@ -86,8 +86,8 @@ ListBox.prototype.init = function () {
   this.firstItem = this.listItems[0];
   this.lastItem  = this.listItems[this.listItems.length - 1];
 
-  // Handle container focus
-  this.container.addEventListener('focus', this.setFocusFirstItem.bind(this));
+  // Handle keydown events when container has focus
+  this.container.addEventListener('keydown', this.handleContainerKeydown.bind(this));
 };
 
 /********************
@@ -104,6 +104,30 @@ ListBox.prototype.configure = function (listItem) {
   // listItem.addEventListener('click', this.handleClick.bind(this));
 };
 
+/*****************************
+*   handleContainerKeydown   *
+*****************************/
+
+ListBox.prototype.handleContainerKeydown = function (event) {
+  let flag = false;
+
+  switch (event.keyCode) {
+
+    case this.keyCode.LEFT:
+    case this.keyCode.UP:
+    case this.keyCode.RIGHT:
+    case this.keyCode.DOWN:
+      this.setFocusFirstItem();
+      flag = true;
+      break;
+  }
+
+  if (flag) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+}
+
 /********************
 *   handleKeydown   *
 ********************/
@@ -113,14 +137,14 @@ ListBox.prototype.handleKeydown = function (event) {
 
   switch (event.keyCode) {
 
-    case this.keyCode.UP:
     case this.keyCode.LEFT:
+    case this.keyCode.UP:
       this.setFocusPrevItem(event.target);
       flag = true;
       break;
 
-    case this.keyCode.DOWN:
     case this.keyCode.RIGHT:
+    case this.keyCode.DOWN:
       this.setFocusNextItem(event.target);
       flag = true;
       break;
