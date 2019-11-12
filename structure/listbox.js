@@ -23,19 +23,6 @@ function ListBox (domNode) {
   this.lastItem  = null;
   this.increment = 8;
 
-  this.keyCode = Object.freeze({
-    'RETURN'   : 13,
-    'SPACE'    : 32,
-    'PAGEUP'   : 33,
-    'PAGEDOWN' : 34,
-    'END'      : 35,
-    'HOME'     : 36,
-    'LEFT'     : 37,
-    'UP'       : 38,
-    'RIGHT'    : 39,
-    'DOWN'     : 40
-  });
-
   this.validate();
   this.init();
 }
@@ -111,12 +98,12 @@ ListBox.prototype.configure = function (listItem) {
 ListBox.prototype.handleContainerKeydown = function (event) {
   let flag = false;
 
-  switch (event.keyCode) {
+  switch (event.key) {
 
-    case this.keyCode.LEFT:
-    case this.keyCode.UP:
-    case this.keyCode.RIGHT:
-    case this.keyCode.DOWN:
+    case 'ArrowLeft':
+    case 'ArrowUp':
+    case 'ArrowRight':
+    case 'ArrowDown':
       this.setFocusFirstItem();
       flag = true;
       break;
@@ -135,36 +122,36 @@ ListBox.prototype.handleContainerKeydown = function (event) {
 ListBox.prototype.handleItemKeydown = function (event) {
   let flag = false;
 
-  switch (event.keyCode) {
+  switch (event.key) {
 
-    case this.keyCode.LEFT:
-    case this.keyCode.UP:
+    case 'ArrowLeft':
+    case 'ArrowUp':
       this.setFocusPrevItem(event.target);
       flag = true;
       break;
 
-    case this.keyCode.RIGHT:
-    case this.keyCode.DOWN:
+    case 'ArrowRight':
+    case 'ArrowDown':
       this.setFocusNextItem(event.target);
       flag = true;
       break;
 
-    case this.keyCode.PAGEUP:
+    case 'PageUp':
       this.setFocusPrevPage(event.target);
       flag = true;
       break;
 
-    case this.keyCode.PAGEDOWN:
+    case 'PageDown':
       this.setFocusNextPage(event.target);
       flag = true;
       break;
 
-    case this.keyCode.HOME:
+    case 'Home':
       this.setFocusFirstItem();
       flag = true;
       break;
 
-    case this.keyCode.END:
+    case 'End':
       this.setFocusLastItem();
       flag = true;
       break;
