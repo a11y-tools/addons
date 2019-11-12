@@ -40,26 +40,9 @@ function ListBox (domNode) {
   this.init();
 }
 
-ListBox.prototype.init = function () {
-  // Set ARIA role for listbox container
-  this.container.setAttribute('role', 'listbox');
-
-  // Configure each listItem and store it in listItems array
-  let children = this.container.children;
-
-  for (let i = 0; i < children.length; i++) {
-    let listItem = children[i];
-    this.configure(listItem);
-    this.listItems.push(listItem);
-  }
-
-  // Assign firstItem and lastItem
-  this.firstItem = this.listItems[0];
-  this.lastItem  = this.listItems[this.listItems.length - 1];
-
-  // Handle container focus
-  this.container.addEventListener('focus', this.setFocusFirstItem.bind(this));
-};
+/********************
+*     validate      *
+********************/
 
 ListBox.prototype.validate = function () {
   let container = this.container;
@@ -82,6 +65,35 @@ ListBox.prototype.validate = function () {
   containerHasChildElements();
 };
 
+/********************
+*       init        *
+********************/
+
+ListBox.prototype.init = function () {
+  // Set ARIA role for listbox container
+  this.container.setAttribute('role', 'listbox');
+
+  // Configure each listItem and store it in listItems array
+  let children = this.container.children;
+
+  for (let i = 0; i < children.length; i++) {
+    let listItem = children[i];
+    this.configure(listItem);
+    this.listItems.push(listItem);
+  }
+
+  // Assign firstItem and lastItem
+  this.firstItem = this.listItems[0];
+  this.lastItem  = this.listItems[this.listItems.length - 1];
+
+  // Handle container focus
+  this.container.addEventListener('focus', this.setFocusFirstItem.bind(this));
+};
+
+/********************
+*     configure     *
+********************/
+
 ListBox.prototype.configure = function (listItem) {
   // Set ARIA role and tabIndex
   listItem.setAttribute('role', 'listitem');
@@ -91,6 +103,10 @@ ListBox.prototype.configure = function (listItem) {
   listItem.addEventListener('keydown', this.handleKeydown.bind(this));
   // listItem.addEventListener('click', this.handleClick.bind(this));
 };
+
+/********************
+*   handleKeydown   *
+********************/
 
 ListBox.prototype.handleKeydown = function (event) {
   let flag = false;
@@ -135,6 +151,10 @@ ListBox.prototype.handleKeydown = function (event) {
     event.preventDefault();
   }
 };
+
+/********************
+*     setFocus      *
+********************/
 
 ListBox.prototype.setFocusFirstItem = function () {
   this.firstItem.focus();
