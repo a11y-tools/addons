@@ -102,6 +102,10 @@ ListBox.prototype.handleContainerKeydown = function (event) {
 
     case 'ArrowLeft':
     case 'ArrowUp':
+      this.setFocusLastItem();
+      flag = true;
+      break;
+
     case 'ArrowRight':
     case 'ArrowDown':
       this.setFocusFirstItem();
