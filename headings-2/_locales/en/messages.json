@@ -1,0 +1,51 @@
+{
+  "extensionName": {
+    "message": "Structure",
+    "description": "Name of the extension"
+  },
+
+  "extensionDescription": {
+    "message": "Collect structural information, such as landmarks and headings, from the active tab.",
+    "description": "Description of the extension"
+  },
+
+  "pageInfoTitle": {
+    "message": "Page Info",
+    "description": "Title that labels the page-info box"
+  },
+
+  "pageTitle": {
+    "message": "Title",
+    "description": "Page title retrieved by content script"
+  },
+
+  "pageUrl": {
+    "message": "URL",
+    "description": "Page URL retrieved by content script"
+  },
+
+  "structureTitle": {
+    "message": "Headings",
+    "description": "Title that labels the structure info box"
+  },
+
+  "emptyContent": {
+    "message": "&lt;empty&gt;",
+    "description": "Message indicating that DOM element has no text content."
+  },
+
+  "noHeadingElements": {
+    "message": "No HTML heading elements found!",
+    "description": "Message indicating that no heading elements were found in the document."
+  },
+
+  "tabIsLoading": {
+    "message": "Updating...",
+    "description": "Message indicating that content in the sidebar panel is being updated."
+  },
+
+  "protocolNotSupported": {
+    "message": "Protocol not supported; unable to retrieve content information.",
+    "description": "Message explaining that content script cannot be executed."
+  }
+}
