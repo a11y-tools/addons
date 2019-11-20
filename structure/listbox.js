@@ -223,18 +223,8 @@ ListBox.prototype.scrollSelectedOption = function () {
       listbox.scrollTop = elementBottom - listbox.clientHeight;
     }
     else if (element.offsetTop < listbox.scrollTop) {
-      listbox.scrollTop = element.offsetTop - 6;
+      listbox.scrollTop = element.offsetTop;
     }
-
-    /*
-    console.log('----------------');
-    console.log(`element.offsetTop: ${element.offsetTop}`);
-    console.log(`element.offsetHeight: ${element.offsetHeight}`);
-    console.log(`elementBottom: ${elementBottom}`);
-    console.log(`listbox.clientHeight: ${listbox.clientHeight}`);
-    console.log(`listbox.scrollTop: ${listbox.scrollTop}`);
-    console.log(`scrollBottom: ${scrollBottom}`);
-    */
   }
 }
 
