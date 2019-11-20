@@ -31,6 +31,7 @@ body > h2 {
 }
 
 #structure-content {
+  position: relative;
   height: 60%;
   display: grid;
   grid-auto-rows: min-content;
@@ -41,6 +42,11 @@ body > h2 {
   display: grid;
   grid-template-columns: repeat(6, 1.33rem) 1fr;
   grid-column-gap: 2px;
+  padding: 2px;
+}
+
+.list-item[aria-selected='true'] {
+  background: #00feff;
 }
 
 .h1-name, .h2-name, .h3-name, .h4-name, .h5-name, .h6-name {

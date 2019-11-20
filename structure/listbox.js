@@ -1,27 +1,32 @@
 /*
 *   ListBox: Object that encapsulates the state and behavior of a listbox
-*   container with listitem elements in order to provide keyboard support
+*   container with option role elements in order to provide keyboard support
 *   as recommended by ARIA Authoring Practices.
 *
 *   Desired behavior:
-*   1. Handle up-arrow, down-arrow, left-arrow, right-arrow, home, end,
-*      page-up and page-down key presses to move focus among listItems.
-*   2. Handle return and space key presses to initiate the desired action
-*      associated with the selected listItem.
+*   1. Handle focus of the listbox container
+*   2. Handle up-arrow, down-arrow, left-arrow, right-arrow, home, end,
+*      page-up and page-down key presses to move selection among options.
+*   3. Handle mouse click for selecting an option.
+*   4. Handle return and space key presses to initiate the desired action
+*      associated with the selected option.
 *
 *   Functionality/methods:
 *   1. Initialize the DOM elements (the container and its children) with the
-*      proper ARIA roles and tabindex values.
-*   2. Create and assign necessary event handlers to DOM elements.
-*   2. Maintain state information needed for the event handlers.
+*      proper ARIA roles.
+*   2. Create and assign necessary event handlers for the ListBox container.
+*   3. Maintain state information needed for the event handlers and set or
+*      remove ARIA attributes such as aria-activedescendant and aria-selected
+*      to reflect the listbox state.
 */
 
 function ListBox (domNode) {
-  this.container = domNode;
-  this.listItems = [];
-  this.firstItem = null;
-  this.lastItem  = null;
-  this.increment = 8;
+  this.container      = domNode;
+  this.optionsList    = [];
+  this.selectedOption = null;
+  this.firstOption    = null;
+  this.lastOption     = null;
+  this.increment      = 6;
 
   this.validate();
   this.init();
@@ -32,24 +37,24 @@ function ListBox (domNode) {
 //-------------------
 
 ListBox.prototype.validate = function () {
-  let container = this.container;
+  let listBox = this.container;
 
-  function containerIsDomElement () {
-    let msg = "The ListBox container is not a DOM Element";
-    if (!container instanceof Element) {
+  function listBoxIsDomElement () {
+    let msg = "The ListBox is not a DOM Element";
+    if (!listBox instanceof Element) {
       throw new TypeError(msg);
     }
   }
 
-  function containerHasChildElements () {
-    let msg = "The ListBox container has no child elements.";
-    if (container.childElementCount === 0) {
+  function listBoxHasChildElements () {
+    let msg = "The ListBox has no child elements.";
+    if (listBox.childElementCount === 0) {
       throw new Error(msg)
     }
   }
 
-  containerIsDomElement();
-  containerHasChildElements();
+  listBoxIsDomElement();
+  listBoxHasChildElements();
 };
 
 //-------------------
@@ -57,106 +62,106 @@ ListBox.prototype.validate = function () {
 //-------------------
 
 ListBox.prototype.init = function () {
-  // Set ARIA role for listbox container
+  // Set ARIA attributes
   this.container.setAttribute('role', 'listbox');
+  this.container.setAttribute('aria-activedescendant', '');
 
-  // Configure each listItem and store it in listItems array
+  // Configure each option and store it in optionsList array
   let children = this.container.children;
 
   for (let i = 0; i < children.length; i++) {
-    let listItem = children[i];
-    this.configure(listItem);
-    this.listItems.push(listItem);
+    let option = children[i];
+    this.configure(option, i);
+    this.optionsList.push(option);
   }
 
-  // Assign firstItem and lastItem
-  this.firstItem = this.listItems[0];
-  this.lastItem  = this.listItems[this.listItems.length - 1];
+  // Use optionsList to set firstOption and lastOption
+  let length = this.optionsList.length;
+  this.firstOption = this.optionsList[0];
+  this.lastOption  = this.optionsList[length - 1];
 
-  // Handle keydown events when container has focus
-  this.container.addEventListener('keydown', this.handleContainerKeydown.bind(this));
+  this.assignEventHandlers();
 };
 
 //-------------------
 //     configure
 //-------------------
 
-ListBox.prototype.configure = function (listItem) {
-  // Set ARIA role and tabIndex
-  listItem.setAttribute('role', 'listitem');
-  listItem.tabIndex = -1;
+ListBox.prototype.configure = function (option, i) {
+  let prefix = 'heading-';
 
-  // Assign event handlers
-  listItem.addEventListener('keydown', this.handleItemKeydown.bind(this));
-  // listItem.addEventListener('click', this.handleClick.bind(this));
+  // Set ARIA role and id
+  option.setAttribute('role', 'option');
+  option.setAttribute('id', prefix + i);
 };
 
-//----------------------------
-//   handleContainerKeydown
-//----------------------------
+//-------------------------
+//   assignEventHandlers
+//-------------------------
 
-ListBox.prototype.handleContainerKeydown = function (event) {
-  let flag = false;
+ListBox.prototype.assignEventHandlers = function () {
+  let listBox = this.container;
 
-  switch (event.key) {
-
-    case 'ArrowLeft':
-    case 'ArrowUp':
-      this.setFocusLastItem();
-      flag = true;
-      break;
-
-    case 'ArrowRight':
-    case 'ArrowDown':
-      this.setFocusFirstItem();
-      flag = true;
-      break;
-  }
-
-  if (flag) {
-    event.stopPropagation();
-    event.preventDefault();
-  }
+  // Handle keydown events
+  listBox.addEventListener('focus', this.handleFocus.bind(this));
+  listBox.addEventListener('keydown', this.handleKeydown.bind(this));
+  listBox.addEventListener('click', this.handleClick.bind(this));
 }
 
-//-----------------------
-//   handleItemKeydown
-//-----------------------
+//-------------------
+//    handleFocus
+//-------------------
 
-ListBox.prototype.handleItemKeydown = function (event) {
+ListBox.prototype.handleFocus = function (event) {
+  if (this.selectedOption === null) {
+    this.setSelected(this.firstOption);
+  }
+  else {
+    this.setSelected(this.selectedOption);
+  }
+
+  event.stopPropagation();
+  event.preventDefault();
+}
+
+//-------------------
+//   handleKeydown
+//-------------------
+
+ListBox.prototype.handleKeydown = function (event) {
   let flag = false;
 
   switch (event.key) {
 
     case 'ArrowLeft':
     case 'ArrowUp':
-      this.setFocusPrevItem(event.target);
+      this.selectPrevOption();
       flag = true;
       break;
 
     case 'ArrowRight':
     case 'ArrowDown':
-      this.setFocusNextItem(event.target);
+      this.selectNextOption();
       flag = true;
       break;
 
     case 'PageUp':
-      this.setFocusPrevPage(event.target);
+      this.selectPrevPage(event.target);
       flag = true;
       break;
 
     case 'PageDown':
-      this.setFocusNextPage(event.target);
+      this.selectNextPage(event.target);
       flag = true;
       break;
 
     case 'Home':
-      this.setFocusFirstItem();
+      this.selectFirstOption();
       flag = true;
       break;
 
     case 'End':
-      this.setFocusLastItem();
+      this.selectLastOption();
       flag = true;
       break;
   }
@@ -167,56 +172,122 @@ ListBox.prototype.handleItemKeydown = function (event) {
   }
 };
 
+//-------------------
+//    handleClick
+//-------------------
+
+ListBox.prototype.handleClick = function (event) {
+  let parentElement = event.target.parentElement;
+
+  if (parentElement.getAttribute('role') === 'option') {
+    this.setSelected(parentElement);
+  }
+
+  event.stopPropagation();
+  event.preventDefault();
+};
+
+//-------------------
+//    setSelected
+//-------------------
+
+ListBox.prototype.setSelected = function (option) {
+  if (this.selectedOption) {
+    this.selectedOption.removeAttribute('aria-selected')
+  }
+
+  this.selectedOption = option;
+  option.setAttribute('aria-selected', 'true');
+  this.container.setAttribute('aria-activedescendant', option.id);
+  this.scrollSelectedOption();
+}
+
+//--------------------------
+//   scrollSelectedOption
+//--------------------------
+
+ListBox.prototype.scrollSelectedOption = function () {
+  let listbox = this.container;
+  let element = this.selectedOption;
+
+  // Note: element.offsetTop is the number of pixels from the top of the
+  // closest relatively positioned parent element. Thus the CSS for the
+  // ListBox container element must specify 'position: relative'.
+
+  if (listbox.scrollHeight > listbox.clientHeight) {
+
+    let elementBottom = element.offsetTop + element.offsetHeight;
+    let scrollBottom = listbox.clientHeight + listbox.scrollTop;
+
+    if (elementBottom > scrollBottom) {
+      listbox.scrollTop = elementBottom - listbox.clientHeight;
+    }
+    else if (element.offsetTop < listbox.scrollTop) {
+      listbox.scrollTop = element.offsetTop - 6;
+    }
+
+    /*
+    console.log('----------------');
+    console.log(`element.offsetTop: ${element.offsetTop}`);
+    console.log(`element.offsetHeight: ${element.offsetHeight}`);
+    console.log(`elementBottom: ${elementBottom}`);
+    console.log(`listbox.clientHeight: ${listbox.clientHeight}`);
+    console.log(`listbox.scrollTop: ${listbox.scrollTop}`);
+    console.log(`scrollBottom: ${scrollBottom}`);
+    */
+  }
+}
+
 //----------------------
-//   setFocus methods
+//    select methods
 //----------------------
 
-ListBox.prototype.setFocusFirstItem = function () {
-  this.firstItem.focus();
+ListBox.prototype.selectFirstOption = function () {
+  this.setSelected(this.firstOption);
 };
 
-ListBox.prototype.setFocusLastItem = function () {
-  this.lastItem.focus();
+ListBox.prototype.selectLastOption = function () {
+  this.setSelected(this.lastOption);
 };
 
-ListBox.prototype.setFocusPrevItem = function (currentItem) {
-  if (currentItem === this.firstItem) return;
+ListBox.prototype.selectPrevOption = function () {
+  if (this.selectedOption === this.firstOption) return;
 
-  let index = this.listItems.indexOf(currentItem);
-  this.listItems[index - 1].focus();
+  let index = this.optionsList.indexOf(this.selectedOption);
+  this.setSelected(this.optionsList[index - 1]);
 };
 
-ListBox.prototype.setFocusNextItem = function (currentItem) {
-  if (currentItem === this.lastItem) return;
+ListBox.prototype.selectNextOption = function (currentItem) {
+  if (this.selectedOption === this.lastOption) return;
 
-  let index = this.listItems.indexOf(currentItem);
-  this.listItems[index + 1].focus();
+  let index = this.optionsList.indexOf(this.selectedOption);
+  this.setSelected(this.optionsList[index + 1]);
 };
 
-ListBox.prototype.setFocusPrevPage = function (currentItem) {
-  if (currentItem === this.firstItem) return;
+ListBox.prototype.selectPrevPage = function (currentItem) {
+  if (this.selectedOption === this.firstOption) return;
 
-  let index = this.listItems.indexOf(currentItem);
+  let index = this.optionsList.indexOf(this.selectedOption);
   let tgtIndex = index - this.increment;
 
   if (tgtIndex < 0) {
-    this.firstItem.focus();
+    this.selectFirstOption();
   }
   else {
-    this.listItems[tgtIndex].focus();
+    this.setSelected(this.optionsList[tgtIndex]);
   }
-}
+};
 
-ListBox.prototype.setFocusNextPage = function (currentItem) {
-  if (currentItem === this.lastItem) return;
+ListBox.prototype.selectNextPage = function (currentItem) {
+  if (this.selectedOption === this.lastOption) return;
 
-  let index = this.listItems.indexOf(currentItem);
+  let index = this.optionsList.indexOf(this.selectedOption);
   let tgtIndex = index + this.increment;
 
-  if (tgtIndex > this.listItems.length - 1) {
-    this.lastItem.focus();
+  if (tgtIndex > this.optionsList.length - 1) {
+    this.selectLastOption();
   }
   else {
-    this.listItems[tgtIndex].focus();
+    this.setSelected(this.optionsList[tgtIndex]);
   }
-}
+};
