@@ -4,15 +4,16 @@
 var headingRefs;
 
 browser.runtime.sendMessage({
+  id: 'info',
   infoList: getInfo(),
   title: document.title,
   url: window.location.href
 });
 
 browser.runtime.onMessage.addListener (
-  function (request, sender, sendResponse) {
-    if (request.id !== 'find') return;
-    let element = headingRefs[request.index];
+  function (message, sender) {
+    if (message.id !== 'find') return;
+    let element = headingRefs[message.index];
     if (isInPage(element)) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
