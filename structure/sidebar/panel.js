@@ -73,9 +73,22 @@ function findSelectedHeading () {
 }
 
 /*
+*   scrollToSelectedHeading
+*/
+function scrollToSelectedHeading () {
+  let index = parseInt(listBox.selectedOption.id.substring(4));
+  let data = { id: 'find', index: index };
+
+  browser.tabs.query({ windowId: myWindowId, active: true })
+  .then((tabs) => {
+    browser.tabs.sendMessage(tabs[0].id, data);
+  });
+}
+
+/*
 *   Add listeners for the search and clear buttons.
 */
-document.getElementById('search-button').addEventListener('click', findSelectedHeading);
+document.getElementById('search-button').addEventListener('click', scrollToSelectedHeading);
 
 document.getElementById('clear-button').addEventListener('click', function () {
   browser.find.removeHighlighting();
@@ -177,6 +190,7 @@ function updateSidebar (info) {
   // Reset listBox object after structure.innerHTML is updated
   function onGotPage (page) {
     listBox = new page.ListBox(structure);
+    updateButton(true);
   }
 }
 
@@ -251,12 +265,33 @@ document.onselectionchange = function() {
   }
 };
 
+function updateButton (flag) {
+  let button = document.getElementById('search-button');
+
+  if (flag) {
+    button.setAttribute('disabled', true);
+  }
+  else {
+    button.removeAttribute('disabled');
+  }
+}
+
 /*
-*   Listen for messages from the content script
+*   Listen for messages from the content script and listbox
 */
 browser.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-    updateSidebar(request);
+  function (message, sender) {
+
+    switch (message.id) {
+      case 'info':
+        updateSidebar(message);
+        break;
+      case 'select':
+        updateButton(false);
+        console.log(`panel.js onMessage: ${message.tabId} ${message.optionId}`);
+        break
+    }
+
   }
 );
 

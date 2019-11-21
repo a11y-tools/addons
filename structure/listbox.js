@@ -88,7 +88,7 @@ ListBox.prototype.init = function () {
 //-------------------
 
 ListBox.prototype.configure = function (option, i) {
-  let prefix = 'heading-';
+  let prefix = 'opt-';
 
   // Set ARIA role and id
   option.setAttribute('role', 'option');
@@ -195,11 +195,13 @@ ListBox.prototype.setSelected = function (option) {
   if (this.selectedOption) {
     this.selectedOption.removeAttribute('aria-selected')
   }
+  console.log(`setSelected: ${option.id}`);
 
   this.selectedOption = option;
   option.setAttribute('aria-selected', 'true');
   this.container.setAttribute('aria-activedescendant', option.id);
   this.scrollSelectedOption();
+  this.notifySidebar();
 }
 
 //--------------------------
@@ -226,6 +228,21 @@ ListBox.prototype.scrollSelectedOption = function () {
       listbox.scrollTop = element.offsetTop;
     }
   }
+}
+
+//----------------------
+//    notifySidebar
+//----------------------
+
+ListBox.prototype.notifySidebar = function () {
+  browser.tabs.query({ active: true })
+  .then((tabs) => {
+    browser.runtime.sendMessage({
+      id: 'select',
+      tabId: tabs[0].id,
+      optionId: this.selectedOption.id
+    });
+  });
 }
 
 //----------------------
