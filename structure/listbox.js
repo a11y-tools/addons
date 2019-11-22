@@ -20,8 +20,10 @@
 *      to reflect the listbox state.
 */
 
-function ListBox (domNode) {
+function ListBox (domNode, notifyFn) {
   this.container      = domNode;
+  this.notifyFn       = notifyFn;
+
   this.optionsList    = [];
   this.selectedOption = null;
   this.firstOption    = null;
@@ -106,6 +108,7 @@ ListBox.prototype.assignEventHandlers = function () {
   listBox.addEventListener('focus', this.handleFocus.bind(this));
   listBox.addEventListener('keydown', this.handleKeydown.bind(this));
   listBox.addEventListener('click', this.handleClick.bind(this));
+  listBox.addEventListener('dblclick', this.handleDblClick.bind(this));
 }
 
 //-------------------
@@ -133,6 +136,7 @@ ListBox.prototype.handleKeydown = function (event) {
 
   switch (event.key) {
 
+    // Navigation keys
     case 'ArrowLeft':
     case 'ArrowUp':
       this.selectPrevOption();
@@ -146,12 +150,12 @@ ListBox.prototype.handleKeydown = function (event) {
       break;
 
     case 'PageUp':
-      this.selectPrevPage(event.target);
+      this.selectPrevPage();
       flag = true;
       break;
 
     case 'PageDown':
-      this.selectNextPage(event.target);
+      this.selectNextPage();
       flag = true;
       break;
 
@@ -162,6 +166,13 @@ ListBox.prototype.handleKeydown = function (event) {
 
     case 'End':
       this.selectLastOption();
+      flag = true;
+      break;
+
+    // Activation keys
+    case 'Enter':
+    case ' ':
+      this.activateSelection();
       flag = true;
       break;
   }
@@ -187,6 +198,14 @@ ListBox.prototype.handleClick = function (event) {
   event.preventDefault();
 };
 
+//----------------------
+//    handleDblClick
+//----------------------
+
+ListBox.prototype.handleDblClick = function (event) {
+  this.activateSelection();
+}
+
 //-------------------
 //    setSelected
 //-------------------
@@ -195,13 +214,15 @@ ListBox.prototype.setSelected = function (option) {
   if (this.selectedOption) {
     this.selectedOption.removeAttribute('aria-selected')
   }
-  console.log(`setSelected: ${option.id}`);
 
   this.selectedOption = option;
   option.setAttribute('aria-selected', 'true');
   this.container.setAttribute('aria-activedescendant', option.id);
   this.scrollSelectedOption();
-  this.notifySidebar();
+  this.notifyFn({
+    action: 'navigate',
+    index: this.optionsList.indexOf(this.selectedOption)
+  });
 }
 
 //--------------------------
@@ -230,18 +251,14 @@ ListBox.prototype.scrollSelectedOption = function () {
   }
 }
 
-//----------------------
-//    notifySidebar
-//----------------------
+//--------------------------
+//    activateSelection
+//--------------------------
 
-ListBox.prototype.notifySidebar = function () {
-  browser.tabs.query({ active: true })
-  .then((tabs) => {
-    browser.runtime.sendMessage({
-      id: 'select',
-      tabId: tabs[0].id,
-      optionId: this.selectedOption.id
-    });
+ListBox.prototype.activateSelection = function () {
+  this.notifyFn({
+    action: 'activate',
+    index: this.optionsList.indexOf(this.selectedOption)
   });
 }
 
@@ -264,14 +281,14 @@ ListBox.prototype.selectPrevOption = function () {
   this.setSelected(this.optionsList[index - 1]);
 };
 
-ListBox.prototype.selectNextOption = function (currentItem) {
+ListBox.prototype.selectNextOption = function () {
   if (this.selectedOption === this.lastOption) return;
 
   let index = this.optionsList.indexOf(this.selectedOption);
   this.setSelected(this.optionsList[index + 1]);
 };
 
-ListBox.prototype.selectPrevPage = function (currentItem) {
+ListBox.prototype.selectPrevPage = function () {
   if (this.selectedOption === this.firstOption) return;
 
   let index = this.optionsList.indexOf(this.selectedOption);
@@ -285,7 +302,7 @@ ListBox.prototype.selectPrevPage = function (currentItem) {
   }
 };
 
-ListBox.prototype.selectNextPage = function (currentItem) {
+ListBox.prototype.selectNextPage = function () {
   if (this.selectedOption === this.lastOption) return;
 
   let index = this.optionsList.indexOf(this.selectedOption);

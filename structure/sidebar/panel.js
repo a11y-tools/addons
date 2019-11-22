@@ -30,53 +30,42 @@ function onError (error) {
 }
 
 /*
-*   findSelectedHeading: This is currently using two different features to
-*   accomplish its goal, which is to highlight the heading in the page and
-*   scroll the window such that the highlighted heading is in view.
-*
-*   1. The browser.find API/methods .find  and .highlightResults are used
-*      for highlighting the heading, until a better method is implemented.
-*      This does not currently work in Firefox Developer Edition.
-*   2. Scrolling the window to the selected heading is accomplished via the
-*      message sent to the content script, which includes the index of the
-*      heading element reference, stored in the headingRefs array, which is
-*      retrieved and used to call the element.scrollIntoView method.
-*
-*   Note: This handler will only be called when there is an actual selection,
-*   due to the action of the document.onselectionchange handler, which enables
-*   the search button only when a selection has been made.
+*   FUNCTIONS THAT HANDLE LISTBOX ACTIONS
+
+/*
+*   onListBoxAction: Called from ListBox event handlers
 */
-function findSelectedHeading () {
-  let logInfo = true;
-
-  let selection = document.getSelection();
-  let data = { id: 'find', index: selection.anchorNode.dataset.index };
-
-  browser.tabs.query({ windowId: myWindowId, active: true })
-  .then((tabs) => {
-    browser.tabs.sendMessage(tabs[0].id, data);
-  });
-
-  browser.find.removeHighlighting();
-  let searching = browser.find.find(selection.toString());
-  searching.then(onFoundSelection, onError);
-
-  function onFoundSelection (results) {
-    if (results.count > 0) {
-      browser.find.highlightResults();
-    }
-
-    if (logInfo) {
-      console.log(`Found ${results.count} instance(s) of '${selection}'`);
-    }
+function onListBoxAction (data) {
+  switch (data.action) {
+    case 'navigate':
+      console.log(`navigate: ${data.index}`);
+      updateButton(false);
+      break;
+    case 'activate':
+      console.log(`activate: ${data.index}`)
+      scrollPageToSelection(data.index);
+      break;
   }
 }
 
 /*
-*   scrollToSelectedHeading
+*   updateButton
 */
-function scrollToSelectedHeading () {
-  let index = parseInt(listBox.selectedOption.id.substring(4));
+function updateButton (flag) {
+  let button = document.getElementById('search-button');
+
+  if (flag) {
+    button.setAttribute('disabled', true);
+  }
+  else {
+    button.removeAttribute('disabled');
+  }
+}
+
+/*
+*   scrollPageToSelection
+*/
+function scrollPageToSelection (index) {
   let data = { id: 'find', index: index };
 
   browser.tabs.query({ windowId: myWindowId, active: true })
@@ -86,13 +75,25 @@ function scrollToSelectedHeading () {
 }
 
 /*
+*   handleSearchButtonActivation
+*/
+function handleSearchButtonActivation (event) {
+  let index = listBox.optionsList.indexOf(listBox.selectedOption);
+  scrollPageToSelection(index);
+}
+
+/*
 *   Add listeners for the search and clear buttons.
 */
-document.getElementById('search-button').addEventListener('click', scrollToSelectedHeading);
+document.getElementById('search-button').addEventListener('click', handleSearchButtonActivation);
 
 document.getElementById('clear-button').addEventListener('click', function () {
   browser.find.removeHighlighting();
 });
+
+/*
+*   FUNCTIONS THAT HANDLE TAB ACTIONS, SUCH AS FOCUS CHANGED, UPDATED AND ACTIVATED
+*/
 
 /*
 *   Handle window focus change events by checking whether the sidebar is
@@ -189,7 +190,7 @@ function updateSidebar (info) {
 
   // Reset listBox object after structure.innerHTML is updated
   function onGotPage (page) {
-    listBox = new page.ListBox(structure);
+    listBox = new page.ListBox(structure, onListBoxAction);
     updateButton(true);
   }
 }
@@ -250,48 +251,21 @@ function updateContent (callerFn) {
 }
 
 /*
-*   Manage the 'disabled' state of the search button by handling text
-*   selection change events in the sidebar structure-content div.
-*/
-document.onselectionchange = function() {
-  let selection = document.getSelection();
-  let button = document.getElementById('search-button');
-
-  if (selection.toString() === '') {
-    button.setAttribute('disabled', true);
-  }
-  else {
-    button.removeAttribute('disabled');
-  }
-};
-
-function updateButton (flag) {
-  let button = document.getElementById('search-button');
-
-  if (flag) {
-    button.setAttribute('disabled', true);
-  }
-  else {
-    button.removeAttribute('disabled');
-  }
-}
-
-/*
 *   Listen for messages from the content script and listbox
 */
 browser.runtime.onMessage.addListener(
   function (message, sender) {
-
     switch (message.id) {
       case 'info':
         updateSidebar(message);
         break;
+      /*
       case 'select':
         updateButton(false);
         console.log(`panel.js onMessage: ${message.tabId} ${message.optionId}`);
-        break
+        break;
+      */
     }
-
   }
 );
 
