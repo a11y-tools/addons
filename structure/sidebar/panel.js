@@ -36,14 +36,17 @@ function onError (error) {
 *   onListBoxAction: Called from ListBox event handlers
 */
 function onListBoxAction (data) {
+  let index = data.index;
+  if (index < 0) return;
+
   switch (data.action) {
     case 'navigate':
-      console.log(`navigate: ${data.index}`);
+      console.log(`navigate: ${index}`);
       updateButton(false);
       break;
     case 'activate':
-      console.log(`activate: ${data.index}`)
-      scrollPageToSelection(data.index);
+      console.log(`activate: ${index}`)
+      scrollPageToSelection(index);
       break;
   }
 }

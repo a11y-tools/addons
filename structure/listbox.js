@@ -204,6 +204,9 @@ ListBox.prototype.handleClick = function (event) {
 
 ListBox.prototype.handleDblClick = function (event) {
   this.activateSelection();
+
+  event.stopPropagation();
+  event.preventDefault();
 }
 
 //-------------------
