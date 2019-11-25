@@ -38,14 +38,14 @@ body > h2 {
   grid-row-gap: 4px;
 }
 
-.list-item {
+.list-option {
   display: grid;
   grid-template-columns: repeat(6, 1.33rem) 1fr;
   grid-column-gap: 2px;
   padding: 2px;
 }
 
-.list-item[aria-selected='true'] {
+.list-option[aria-selected='true'] {
   background: #00feff;
 }
 
