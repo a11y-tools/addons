@@ -29,9 +29,9 @@ function onError (error) {
   console.log(`Error: ${error}`);
 }
 
-/*
-*   FUNCTIONS THAT HANDLE LISTBOX ACTIONS
-*/
+//-----------------------------------------
+//  Functions that handle ListBox actions
+//-----------------------------------------
 
 /*
 *   onListBoxAction: Called from ListBox event handlers
@@ -95,9 +95,37 @@ document.getElementById('clear-button').addEventListener('click', function () {
   browser.find.removeHighlighting();
 });
 
+//-----------------------------------------------
+//  Functions that handle tab and window events
+//-----------------------------------------------
+
 /*
-*   FUNCTIONS THAT HANDLE TAB ACTIONS, SUCH AS FOCUS CHANGED, UPDATED AND ACTIVATED
+*   Handle tabs.onUpdated event when status is 'complete'
 */
+let timeoutID;
+function handleTabUpdated (tabId, changeInfo, tab) {
+  // Skip content update when new page is loaded in background tab
+  if (!tab.active) return;
+
+  clearTimeout(timeoutID);
+  if (changeInfo.status === "complete") {
+    updateContent('handleTabUpdated');
+  }
+  else {
+    timeoutID = setTimeout(function () {
+      updateSidebar(tabIsLoading);
+    }, 250);
+  }
+}
+
+/*
+*   Handle tabs.onActivated event
+*/
+function handleTabActivated (activeInfo) {
+  if (logInfo) console.log(activeInfo);
+
+  updateContent('handleTabActivated');
+}
 
 /*
 *   Handle window focus change events by checking whether the sidebar is
@@ -122,6 +150,10 @@ browser.windows.onFocusChanged.addListener((windowId) => {
     if (logInfo) console.log(`onInvalidId: ${error}`);
   }
 });
+
+//---------------------------------------------------------------
+//  Functions that process and display data from content script
+//---------------------------------------------------------------
 
 /*
 *   getFormattedData: Convert the contentInfo data into an HTML string with
@@ -155,8 +187,8 @@ function formatStructureInfo (infoList) {
     let name = infoList[i].name, text = infoList[i].text;
     if (text.trim() === '') text = `<span class="empty">${emptyContent}</span>`;
     let classNames = getClassNames(name);
-    html += `<div class="list-item"><div class="${classNames[0]}">${name}</div><div \
-    class="${classNames[1]}" data-index="${i}">${text}</div></div>`;
+    html += `<div class="list-option"><div class="${classNames[0]}">${name}</div><div \
+    class="${classNames[1]}">${text}</div></div>`;
   }
   return html;
 }
@@ -199,35 +231,9 @@ function updateSidebar (info) {
   }
 }
 
-/*
-*   Handle tabs.onUpdated event, but only when status is 'complete'. There
-*   can be numerous calls to this event handler, as multiple events are
-*   triggered while the tab is updating, e.g. status is 'loading'.
-*/
-let timeoutID;
-function handleTabUpdated (tabId, changeInfo, tab) {
-  // Skip content update when new page is loaded in background tab
-  if (!tab.active) return;
-
-  clearTimeout(timeoutID);
-  if (changeInfo.status === "complete") {
-    updateContent('handleTabUpdated');
-  }
-  else {
-    timeoutID = setTimeout(function () {
-      updateSidebar(tabIsLoading);
-    }, 250);
-  }
-}
-
-/*
-*   Handle tabs.onActivated event
-*/
-function handleTabActivated (activeInfo) {
-  if (logInfo) console.log(activeInfo);
-
-  updateContent('handleTabActivated');
-}
+//-----------------------------------------------------------------------
+//  Functions that run the content script and process the data it sends
+//-----------------------------------------------------------------------
 
 /*
 *   Update sidebar content by running the content script. When the
@@ -263,15 +269,13 @@ browser.runtime.onMessage.addListener(
       case 'info':
         updateSidebar(message);
         break;
-      /*
-      case 'select':
-        updateButton(false);
-        console.log(`panel.js onMessage: ${message.tabId} ${message.optionId}`);
-        break;
-      */
     }
   }
 );
+
+//-----------------------------------------------------
+//  Functions for handling load and unload of sidebar
+//-----------------------------------------------------
 
 /*
 *   Update variable in background script used for toggling sidebar
