@@ -31,6 +31,7 @@ function onError (error) {
 
 /*
 *   FUNCTIONS THAT HANDLE LISTBOX ACTIONS
+*/
 
 /*
 *   onListBoxAction: Called from ListBox event handlers

@@ -106,8 +106,8 @@ ListBox.prototype.assignEventHandlers = function () {
 
   // Handle keydown events
   listBox.addEventListener('focus', this.handleFocus.bind(this));
-  listBox.addEventListener('keydown', this.handleKeydown.bind(this));
-  listBox.addEventListener('click', this.handleClick.bind(this));
+  listBox.addEventListener('keydown', this.handleKeyDown.bind(this));
+  listBox.addEventListener('mousedown', this.handleMouseDown.bind(this));
   listBox.addEventListener('dblclick', this.handleDblClick.bind(this));
 }
 
@@ -131,7 +131,7 @@ ListBox.prototype.handleFocus = function (event) {
 //   handleKeydown
 //-------------------
 
-ListBox.prototype.handleKeydown = function (event) {
+ListBox.prototype.handleKeyDown = function (event) {
   let flag = false;
 
   switch (event.key) {
@@ -187,15 +187,15 @@ ListBox.prototype.handleKeydown = function (event) {
 //    handleClick
 //-------------------
 
-ListBox.prototype.handleClick = function (event) {
+ListBox.prototype.handleMouseDown = function (event) {
   let parentElement = event.target.parentElement;
 
   if (parentElement.getAttribute('role') === 'option') {
     this.setSelected(parentElement);
-  }
 
-  event.stopPropagation();
-  event.preventDefault();
+    event.stopPropagation();
+    event.preventDefault();
+  }
 };
 
 //----------------------
