@@ -132,7 +132,8 @@ function handleTabActivated (activeInfo) {
 *   open in the newly focused window, and if so, save the new window ID
 *   and update the sidebar content.
 */
-browser.windows.onFocusChanged.addListener((windowId) => {
+
+function handleWindowFocusChanged (windowId) {
   if (windowId !== myWindowId) {
     let checkingOpenStatus = browser.sidebarAction.isOpen({ windowId });
     checkingOpenStatus.then(onGotStatus, onInvalidId);
@@ -149,7 +150,7 @@ browser.windows.onFocusChanged.addListener((windowId) => {
   function onInvalidId (error) {
     if (logInfo) console.log(`onInvalidId: ${error}`);
   }
-});
+}
 
 //---------------------------------------------------------------
 //  Functions that process and display data from content script
@@ -231,9 +232,10 @@ function updateSidebar (info) {
   }
 }
 
-//-----------------------------------------------------------------------
-//  Functions that run the content script and process the data it sends
-//-----------------------------------------------------------------------
+//------------------------------------------------------
+//  Functions that run the content script and initiate
+//  processing of the data it sends via messaging
+//------------------------------------------------------
 
 /*
 *   Update sidebar content by running the content script. When the
@@ -273,9 +275,10 @@ browser.runtime.onMessage.addListener(
   }
 );
 
-//-----------------------------------------------------
-//  Functions for handling load and unload of sidebar
-//-----------------------------------------------------
+//-------------------------------------------------------------
+//  Functions that handle the sidebar load and unload events,
+//  including the adding and removing of listeners
+//-------------------------------------------------------------
 
 /*
 *   Update variable in background script used for toggling sidebar
@@ -293,14 +296,16 @@ function updateOpenStatus (isOpen) {
 /*
 *   Load and unload event listeners and keep track of sidebar status
 */
-window.addEventListener("load",   function (e) {
+window.addEventListener("load", function (e) {
   updateOpenStatus(true);
   browser.tabs.onUpdated.addListener(handleTabUpdated, { properties: ["status"] });
   browser.tabs.onActivated.addListener(handleTabActivated);
+  browser.windows.onFocusChanged.addListener(handleWindowFocusChanged);
 });
 
 window.addEventListener("unload", function (e) {
   updateOpenStatus(false);
   browser.tabs.onUpdated.removeListener(handleTabUpdated);
   browser.tabs.onActivated.removeListener(handleTabActivated);
+  browser.windows.onFocusChanged.removeListener(handleWindowFocusChanged);
 });
