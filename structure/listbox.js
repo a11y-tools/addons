@@ -128,7 +128,7 @@ ListBox.prototype.handleFocus = function (event) {
 }
 
 //-------------------
-//   handleKeydown
+//   handleKeyDown
 //-------------------
 
 ListBox.prototype.handleKeyDown = function (event) {
@@ -183,9 +183,9 @@ ListBox.prototype.handleKeyDown = function (event) {
   }
 };
 
-//-------------------
-//    handleClick
-//-------------------
+//---------------------
+//   handleMouseDown
+//---------------------
 
 ListBox.prototype.handleMouseDown = function (event) {
   let parentElement = event.target.parentElement;
@@ -198,9 +198,9 @@ ListBox.prototype.handleMouseDown = function (event) {
   }
 };
 
-//----------------------
-//    handleDblClick
-//----------------------
+//--------------------
+//   handleDblClick
+//--------------------
 
 ListBox.prototype.handleDblClick = function (event) {
   this.activateSelection();
@@ -254,9 +254,9 @@ ListBox.prototype.scrollSelectedOption = function () {
   }
 }
 
-//--------------------------
-//    activateSelection
-//--------------------------
+//-----------------------
+//   activateSelection
+//-----------------------
 
 ListBox.prototype.activateSelection = function () {
   this.notifyFn({
@@ -265,9 +265,9 @@ ListBox.prototype.activateSelection = function () {
   });
 }
 
-//----------------------
-//    select methods
-//----------------------
+//--------------------
+//   select methods
+//--------------------
 
 ListBox.prototype.selectFirstOption = function () {
   this.setSelected(this.firstOption);
