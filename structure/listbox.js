@@ -123,8 +123,8 @@ ListBox.prototype.handleFocus = function (event) {
     this.setSelected(this.selectedOption);
   }
 
-  event.stopPropagation();
-  event.preventDefault();
+  // event.stopPropagation();
+  // event.preventDefault();
 }
 
 //-------------------
@@ -193,8 +193,8 @@ ListBox.prototype.handleMouseDown = function (event) {
   if (parentElement.getAttribute('role') === 'option') {
     this.setSelected(parentElement);
 
-    event.stopPropagation();
-    event.preventDefault();
+    // event.stopPropagation();
+    // event.preventDefault();
   }
 };
 
@@ -205,8 +205,8 @@ ListBox.prototype.handleMouseDown = function (event) {
 ListBox.prototype.handleDblClick = function (event) {
   this.activateSelection();
 
-  event.stopPropagation();
-  event.preventDefault();
+  // event.stopPropagation();
+  // event.preventDefault();
 }
 
 //-------------------
