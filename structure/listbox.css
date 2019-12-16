@@ -1,0 +1,36 @@
+/*
+*   listbox.css
+*/
+
+.listbox {
+  position: relative;
+  height: 60%;
+  overflow-y: auto;
+
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-row-gap: 2px;
+
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+.list-option {
+  display: grid;
+  grid-template-columns: repeat(6, 1.33rem) 1fr;
+  grid-column-gap: 2px;
+
+  border: 1px solid #fff;
+  padding: 2px;
+}
+
+.list-option:hover {
+  background: #eee;
+  border: 1px solid #999;
+}
+
+.list-option[aria-selected='true'],
+.list-option[aria-selected='true']:hover {
+  background: #00feff;
+  border: 1px solid #008ea4;
+}
