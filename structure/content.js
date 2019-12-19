@@ -2,7 +2,27 @@
 *   content.js
 */
 var headingRefs;
+var className = 'structureExtensionHighlight';
+var classProperties = `{
+  position:   absolute;
+  overflow:   hidden;
+  box-sizing: border-box;
+  border:     3px solid cyan;
+  z-index:    10000; }
+}`;
 
+/*
+*   Add highlighting stylesheet to document.
+*/
+(function () {
+  let sheet = document.createElement('style');
+  sheet.innerHTML = '.' + className + ' ' + classProperties;
+  document.body.appendChild(sheet);
+})();
+
+/*
+*   Send 'info' message with page and heading information to sidebar script.
+*/
 browser.runtime.sendMessage({
   id: 'info',
   infoList: getInfo(),
@@ -10,17 +30,67 @@ browser.runtime.sendMessage({
   url: window.location.href
 });
 
+/*
+*   Respond to 'find' message by highlighting and scrolling to the element
+*   specified by the 'message.index' value.
+*/
 browser.runtime.onMessage.addListener (
   function (message, sender) {
     if (message.id !== 'find') return;
     let element = headingRefs[message.index];
     if (isInPage(element)) {
+      addHighlightBox(element);
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     else {
       console.log('Element was removed from DOM: ' + element)
     }
 });
+
+/*
+*   addHighlightBox: Clear previous highlighting and add highlight border box
+*   to specified element.
+*/
+function addHighlightBox (element) {
+  let boundingRect = element.getBoundingClientRect();
+  removeOverlays();
+
+  let overlayNode = createOverlay(boundingRect);
+  document.body.appendChild(overlayNode);
+}
+
+/*
+*   createOverlay: Use bounding client rectangle and offsets to create an element
+*   that appears as a highlighted border around element corresponding to 'rect'.
+*/
+function createOverlay (rect) {
+  const MIN_WIDTH = 68;
+  const MIN_HEIGHT = 27;
+  const OFFSET = 5;
+
+  let node = document.createElement('div');
+  node.setAttribute('class', className);
+
+  node.style.left   = Math.round(rect.left - OFFSET + window.scrollX) + 'px';
+  node.style.top    = Math.round(rect.top  - OFFSET + window.scrollY) + 'px';
+
+  node.style.width  = Math.max(rect.width  + OFFSET * 2, MIN_WIDTH)  + 'px';
+  node.style.height = Math.max(rect.height + OFFSET * 2, MIN_HEIGHT) + 'px';
+
+  return node;
+}
+
+/*
+*   removeOverlays: Utilize 'className' to remove highlight overlays created
+*   by previous calls to 'addHighlightBox'.
+*/
+function removeOverlays () {
+  let selector = 'div.' + className;
+  let elements = document.querySelectorAll(selector);
+  Array.prototype.forEach.call(elements, function (element) {
+    document.body.removeChild(element);
+  });
+}
 
 /*
 *   isInPage: This function checks to see if an element is a descendant of
