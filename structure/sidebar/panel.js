@@ -29,25 +29,27 @@ function onError (error) {
   console.log(`Error: ${error}`);
 }
 
-//-----------------------------------------
-//  Functions that handle ListBox actions
-//-----------------------------------------
+//--------------------------------------------------------------
+//  Functions that handle ListBox selection and button actions
+//--------------------------------------------------------------
 
 /*
 *   onListBoxAction: Called from ListBox event handlers
 */
 function onListBoxAction (data) {
-  let index = data.index;
-  if (index < 0) return;
+  if (data.index < 0) return;
 
   switch (data.action) {
     case 'navigate':
-      console.log(`navigate: ${index}`);
+      console.log(`navigate: ${data.index}`);
       updateButton(false);
       break;
     case 'activate':
-      console.log(`activate: ${index}`)
-      scrollPageToSelection(index);
+      console.log(`activate: ${data.index}`)
+      sendButtonActivationMessage({
+        id: 'find',
+        index: data.index
+      });
       break;
   }
 }
@@ -67,11 +69,28 @@ function updateButton (flag) {
 }
 
 /*
-*   scrollPageToSelection
+*   highlightSelectedOption
 */
-function scrollPageToSelection (index) {
-  let data = { id: 'find', index: index };
+function highlightSelectedOption (event) {
+  sendButtonActivationMessage({
+    id: 'find',
+    index: listBox.optionsList.indexOf(listBox.selectedOption)
+  });
+}
 
+/*
+*   removeHighlighting
+*/
+function removeHighlighting (event) {
+  sendButtonActivationMessage({
+    id: 'clear'
+  });
+}
+
+/*
+*   sendButtonActivationMessage
+*/
+function sendButtonActivationMessage (data) {
   browser.tabs.query({ windowId: myWindowId, active: true })
   .then((tabs) => {
     browser.tabs.sendMessage(tabs[0].id, data);
@@ -79,21 +98,10 @@ function scrollPageToSelection (index) {
 }
 
 /*
-*   handleSearchButtonActivation
-*/
-function handleSearchButtonActivation (event) {
-  let index = listBox.optionsList.indexOf(listBox.selectedOption);
-  scrollPageToSelection(index);
-}
-
-/*
 *   Add listeners for the search and clear buttons.
 */
-document.getElementById('search-button').addEventListener('click', handleSearchButtonActivation);
-
-document.getElementById('clear-button').addEventListener('click', function () {
-  browser.find.removeHighlighting();
-});
+document.getElementById('search-button').addEventListener('click', highlightSelectedOption);
+document.getElementById('clear-button').addEventListener('click', removeHighlighting);
 
 //-----------------------------------------------
 //  Functions that handle tab and window events
