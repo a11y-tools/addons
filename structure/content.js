@@ -4,11 +4,12 @@
 var headingRefs;
 var className = 'structureExtensionHighlight';
 var classProperties = `{
-  position:   absolute;
-  overflow:   hidden;
+  position: absolute;
+  overflow: hidden;
   box-sizing: border-box;
-  border:     3px solid cyan;
-  z-index:    10000; }
+  border: 3px solid cyan;
+  pointer-events: none;
+  z-index: 10000;
 }`;
 
 /*
