@@ -31,19 +31,26 @@ browser.runtime.sendMessage({
 });
 
 /*
-*   Respond to 'find' message by highlighting and scrolling to the element
-*   specified by the 'message.index' value.
+*   Respond to 'find' and 'clear' messages by highlighting and scrolling to
+*   the element specified or removing the highlighting
 */
 browser.runtime.onMessage.addListener (
   function (message, sender) {
-    if (message.id !== 'find') return;
-    let element = headingRefs[message.index];
-    if (isInPage(element)) {
-      addHighlightBox(element);
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    else {
-      console.log('Element was removed from DOM: ' + element)
+    switch (message.id) {
+      case 'find':
+        let element = headingRefs[message.index];
+        if (isInPage(element)) {
+          addHighlightBox(element);
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        else {
+          console.log('Element was removed from DOM: ' + element)
+        }
+        break;
+
+      case 'clear':
+        removeOverlays();
+        break;
     }
 });
 
