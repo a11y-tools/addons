@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="panel.css"/>
+    <link rel="stylesheet" href="../listbox.css"/>
+  </head>
+
+<body>
+  <h2 id="page-info-title"></h2>
+  <div id="page-info-content" class="content" aria-labelledby="page-info-title" tabindex="0"></div>
+  <h2 id="structure-title"></h2>
+  <div id="structure-content" class="listbox" aria-labelledby="structure-title" tabindex="0"></div>
+  <div>
+    <button class="search" id="search-button" disabled>Highlight Selected</button>
+    <button class="search" id="clear-button">Clear Highlighting</button>
+  </div>
+  <p id="desc">Displays the headings hierarchy (in document order) of the page
+  loaded in the active tab.</p>
+  <script src="panel.js"></script>
+</body>
+
+</html>
