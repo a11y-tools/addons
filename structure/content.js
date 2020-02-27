@@ -2,6 +2,7 @@
 *   content.js
 */
 var headingRefs;
+var currentHeading;
 
 var highlightClass = 'structureExtensionHighlight';
 var highlightProperties = `{
@@ -47,11 +48,15 @@ browser.runtime.onMessage.addListener (
       case 'find':
         let element = headingRefs[message.index];
         if (isInPage(element)) {
+          if (currentHeading) {
+            document.removeEventListener('focus', focusListener);
+            document.removeEventListener('blur', blurListener);
+          }
           addHighlightBox(element);
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          document.addEventListener('focus', (event) => {
-            setFocus(element);
-          })
+          currentHeading = element;
+          document.addEventListener('focus', focusListener);
+          document.addEventListener('blur', blurListener);
         }
         else {
           console.log('Element was removed from DOM: ' + element)
@@ -60,10 +65,26 @@ browser.runtime.onMessage.addListener (
 
       case 'clear':
         removeOverlays();
+        document.removeEventListener('focus', focusListener);
+        document.removeEventListener('blur', blurListener);
         break;
     }
 });
 
+function focusListener (event) {
+  setFocus(currentHeading);
+}
+
+function blurListener (event) {
+  addHighlightBox(currentHeading);
+}
+
+/*
+*   setFocus: Used by 'focus' event handler for the document after selected
+*   heading has been highlighted and page has been scrolled to bring it into
+*   view. When the user changes focus from the sidebar to the page, add CSS
+*   class for focus styling and set focus to specified heading element.
+*/
 function setFocus (element) {
   removeOverlays();
   element.classList.add(focusClass);
