@@ -2,8 +2,9 @@
 *   content.js
 */
 var headingRefs;
-var className = 'structureExtensionHighlight';
-var classProperties = `{
+
+var highlightClass = 'structureExtensionHighlight';
+var highlightProperties = `{
   position: absolute;
   overflow: hidden;
   box-sizing: border-box;
@@ -12,12 +13,17 @@ var classProperties = `{
   z-index: 10000;
 }`;
 
+var focusClass = 'structureExtensionFocus';
+var focusProperties = `{
+  outline: 3px dotted purple;
+}`;
+
 /*
 *   Add highlighting stylesheet to document.
 */
 (function () {
   let sheet = document.createElement('style');
-  sheet.innerHTML = '.' + className + ' ' + classProperties;
+  sheet.innerHTML = `.${highlightClass} ${highlightProperties} .${focusClass}:focus ${focusProperties}`;
   document.body.appendChild(sheet);
 })();
 
@@ -43,6 +49,9 @@ browser.runtime.onMessage.addListener (
         if (isInPage(element)) {
           addHighlightBox(element);
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          document.addEventListener('focus', (event) => {
+            setFocus(element);
+          })
         }
         else {
           console.log('Element was removed from DOM: ' + element)
@@ -54,6 +63,13 @@ browser.runtime.onMessage.addListener (
         break;
     }
 });
+
+function setFocus (element) {
+  removeOverlays();
+  element.classList.add(focusClass);
+  element.setAttribute('tabindex', 0);
+  element.focus();
+}
 
 /*
 *   addHighlightBox: Clear previous highlighting and add highlight border box
@@ -77,7 +93,7 @@ function createOverlay (rect) {
   const OFFSET = 5;
 
   let node = document.createElement('div');
-  node.setAttribute('class', className);
+  node.setAttribute('class', highlightClass);
 
   node.style.left   = Math.round(rect.left - OFFSET + window.scrollX) + 'px';
   node.style.top    = Math.round(rect.top  - OFFSET + window.scrollY) + 'px';
@@ -89,11 +105,11 @@ function createOverlay (rect) {
 }
 
 /*
-*   removeOverlays: Utilize 'className' to remove highlight overlays created
+*   removeOverlays: Utilize 'highlightClass' to remove highlight overlays created
 *   by previous calls to 'addHighlightBox'.
 */
 function removeOverlays () {
-  let selector = 'div.' + className;
+  let selector = 'div.' + highlightClass;
   let elements = document.querySelectorAll(selector);
   Array.prototype.forEach.call(elements, function (element) {
     document.body.removeChild(element);
