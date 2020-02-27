@@ -68,7 +68,9 @@ function setFocus (element) {
   removeOverlays();
   element.classList.add(focusClass);
   element.setAttribute('tabindex', 0);
-  element.focus();
+  element.focus({
+    preventScroll: true
+  });
 }
 
 /*
