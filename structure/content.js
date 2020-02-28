@@ -48,10 +48,6 @@ browser.runtime.onMessage.addListener (
       case 'find':
         let element = headingRefs[message.index];
         if (isInPage(element)) {
-          if (currentHeading) {
-            document.removeEventListener('focus', focusListener);
-            document.removeEventListener('blur', blurListener);
-          }
           addHighlightBox(element);
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
           currentHeading = element;
