@@ -1,5 +1,5 @@
 html, body {
-  height: 90%;
+  height: 95%;
   font: caption;
   margin: 2px 7px 0 6px;
   background-color: white;
@@ -17,17 +17,34 @@ body > h2 {
   padding: 5px;
 }
 
-#page-info-content {
-  height: 22%;
+#page-title-content {
+  min-height: 60px;
 }
 
-#page-info-content h3 {
-  font-size: 110%;
-  margin: 0;
-}
-
-#page-info-content p {
+#page-title-content p {
   margin: 0.5em 0;
+}
+
+#headings-content {
+  height: 80%;
+}
+
+body > details {
+  min-height: 200px;
+}
+
+body > details > summary {
+  font-size: 110%;
+  font-weight: bold;
+  margin: 1em 0;
+}
+
+body > details ul {
+  padding: 0 1em;
+}
+
+body > details li:not(:first-child) {
+  margin-top: 0.66em;
 }
 
 .h1-name, .h2-name, .h3-name, .h4-name, .h5-name, .h6-name {
