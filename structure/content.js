@@ -34,8 +34,7 @@ var focusProperties = `{
 browser.runtime.sendMessage({
   id: 'info',
   infoList: getInfo(),
-  title: document.title,
-  url: window.location.href
+  title: document.title
 });
 
 /*
@@ -84,9 +83,9 @@ function blurListener (event) {
 function setFocus (element) {
   removeOverlays();
   element.classList.add(focusClass);
-  element.setAttribute('tabindex', 0);
+  element.setAttribute('tabindex', -1);
   element.focus({
-    preventScroll: true
+    preventScroll: false
   });
 }
 
