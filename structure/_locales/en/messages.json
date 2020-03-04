@@ -5,28 +5,33 @@
   },
 
   "extensionDescription": {
-    "message": "Collect structural information, such as landmarks and headings, from the active tab.",
+    "message": "Collect structural information, such as page title and headings, from the active tab.",
     "description": "Description of the extension"
   },
 
-  "pageInfoTitle": {
-    "message": "Page Info",
-    "description": "Title that labels the page-info box"
+  "pageTitleLabel": {
+    "message": "Page Title",
+    "description": "Label for page title"
   },
 
-  "pageTitle": {
-    "message": "Title",
-    "description": "Page title retrieved by content script"
-  },
-
-  "pageUrl": {
-    "message": "URL",
-    "description": "Page URL retrieved by content script"
-  },
-
-  "structureTitle": {
+  "headingsLabel": {
     "message": "Headings",
-    "description": "Title that labels the structure info box"
+    "description": "Label for list of headings"
+  },
+
+  "helpLabel": {
+    "message": "Instructions",
+    "description": "Label for help/instructions"
+  },
+
+  "helpHighlight": {
+    "message": "When a heading is selected, activating the 'Highlight Selected' button (or pressing 'enter' or 'return', or double-clicking the selection) will cause the heading to be highlighted on the page and scrolled into view.",
+    "description": "Help text describing how to move focus to selected heading."
+  },
+
+  "helpFocus": {
+    "message": "When a heading is highlighted on the page, using 'F6' to move focus to the page will cause the heading to receive focus.",
+    "description": "Help text describing how to move focus to selected heading."
   },
 
   "emptyContent": {
