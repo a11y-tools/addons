@@ -8,6 +8,7 @@ let pageTitleLabel       = getMessage("pageTitleLabel");
 let headingsLabel        = getMessage("headingsLabel");
 let helpLabel            = getMessage("helpLabel");
 let helpHighlight        = getMessage("helpHighlight");
+let helpActivate         = getMessage("helpActivate");
 let helpFocus            = getMessage("helpFocus");
 let emptyContent         = getMessage("emptyContent");
 let noHeadingElements    = getMessage("noHeadingElements");
@@ -214,6 +215,7 @@ function updateSidebar (info) {
   // help-label, help-highlight and help-focus
   document.getElementById('help-label').textContent = helpLabel;
   document.getElementById('help-highlight').textContent = helpHighlight;
+  document.getElementById('help-activate').textContent = helpActivate;
   document.getElementById('help-focus').textContent = helpFocus;
 
   // page-title and headings

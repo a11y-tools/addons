@@ -25,8 +25,13 @@
   },
 
   "helpHighlight": {
-    "message": "When a heading is selected, activating the 'Highlight Selected' button (or pressing 'enter' or 'return', or double-clicking the selection) will cause the heading to be highlighted on the page and scrolled into view.",
-    "description": "Help text describing how to move focus to selected heading."
+    "message": "When you activate the selected heading in the list, the heading is highlighted on the page and scrolled into view.",
+    "description": "Help text describing how to highlight the selected heading on the page."
+  },
+
+  "helpActivate": {
+    "message": "To activate the selected heading: press the 'Highlight Selected' button; or press 'enter' or 'return'; or double-click the selection.",
+    "description": "Help text describing how to activate the selected heading."
   },
 
   "helpFocus": {
