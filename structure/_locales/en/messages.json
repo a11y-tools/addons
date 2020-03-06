@@ -30,7 +30,7 @@
   },
 
   "helpActivate": {
-    "message": "To activate the selected heading: press the 'Highlight Selected' button; or press 'enter' or 'return'; or double-click the selection.",
+    "message": "To activate the selected heading, use the 'Highlight Selected' button, or press 'enter' or 'return', or double-click the selection.",
     "description": "Help text describing how to activate the selected heading."
   },
 
