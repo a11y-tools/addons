@@ -30,7 +30,7 @@ body > h2 {
 }
 
 body > details {
-  min-height: 200px;
+  height: 10%;
 }
 
 body > details > summary {
