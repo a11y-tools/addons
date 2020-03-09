@@ -19,6 +19,16 @@
     "description": "Label for list of headings"
   },
 
+  "searchButtonLabel": {
+    "message": "Highlight Selected",
+    "description": ""
+  },
+
+  "clearButtonLabel": {
+    "message": "Clear Highlighting",
+    "description": ""
+  },
+
   "helpLabel": {
     "message": "Instructions",
     "description": "Label for help/instructions"

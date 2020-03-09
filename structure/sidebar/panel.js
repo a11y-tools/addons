@@ -4,16 +4,35 @@ var listBox;
 
 // Get message strings from locale-specific messages.json file
 let getMessage = browser.i18n.getMessage;
-let pageTitleLabel       = getMessage("pageTitleLabel");
-let headingsLabel        = getMessage("headingsLabel");
-let helpLabel            = getMessage("helpLabel");
-let helpHighlight        = getMessage("helpHighlight");
-let helpActivate         = getMessage("helpActivate");
-let helpFocus            = getMessage("helpFocus");
+
 let emptyContent         = getMessage("emptyContent");
 let noHeadingElements    = getMessage("noHeadingElements");
 let tabIsLoading         = getMessage("tabIsLoading");
 let protocolNotSupported = getMessage("protocolNotSupported");
+
+function addLabelsAndHelpContent () {
+  // page-title-label and headings-label
+  document.getElementById('page-title-label').textContent =
+    getMessage("pageTitleLabel");
+  document.getElementById('headings-label').textContent =
+    getMessage("headingsLabel");
+
+  // button labels
+  document.getElementById('search-button').textContent =
+    getMessage("searchButtonLabel");
+  document.getElementById('clear-button').textContent =
+    getMessage("clearButtonLabel");
+
+  // help-label, help-highlight, help-active and help-focus content
+  document.getElementById('help-label').textContent =
+    getMessage("helpLabel");
+  document.getElementById('help-highlight').textContent =
+    getMessage("helpHighlight");
+  document.getElementById('help-activate').textContent =
+    getMessage("helpActivate");
+  document.getElementById('help-focus').textContent =
+    getMessage("helpFocus");
+}
 
 /*
 *   When the sidebar loads, store the ID of the current window and update
@@ -21,6 +40,7 @@ let protocolNotSupported = getMessage("protocolNotSupported");
 */
 browser.windows.getCurrent({ populate: true }).then( (windowInfo) => {
   myWindowId = windowInfo.id;
+  addLabelsAndHelpContent();
   updateContent('getCurrent');
 });
 
@@ -207,16 +227,6 @@ function formatStructureInfo (infoList) {
 function updateSidebar (info) {
   let pageTitle = document.getElementById('page-title-content');
   let headings = document.getElementById('headings-content');
-
-  // page-title-label and headings-label
-  document.getElementById('page-title-label').textContent = pageTitleLabel;
-  document.getElementById('headings-label').textContent = headingsLabel;
-
-  // help-label, help-highlight and help-focus
-  document.getElementById('help-label').textContent = helpLabel;
-  document.getElementById('help-highlight').textContent = helpHighlight;
-  document.getElementById('help-activate').textContent = helpActivate;
-  document.getElementById('help-focus').textContent = helpFocus;
 
   // page-title and headings
   if (typeof info === 'object') {
