@@ -13,8 +13,7 @@
   ],
 
   "background": {
-    "page": "background.html",
-    "persistent": true
+    "scripts": ["background.js"]
   },
 
   "browser_action": {

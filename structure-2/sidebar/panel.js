@@ -299,31 +299,11 @@ browser.runtime.onMessage.addListener(
   }
 );
 
-//-------------------------------------------------------------
-//  Functions that handle the sidebar load and unload events,
-//  including the adding and removing of listeners
-//-------------------------------------------------------------
-
 /*
-*   Update storage property used for toggling sidebar
-*/
-function updateOpenStatus (bValue) {
-  saveOptions({ isSidebarOpen: bValue});
-}
-
-/*
-*   Load and unload event listeners and keep track of sidebar status
+*   Add event listeners when sidebar loads
 */
 window.addEventListener("load", function (e) {
-  updateOpenStatus(true);
   browser.tabs.onUpdated.addListener(handleTabUpdated, { properties: ["status"] });
   browser.tabs.onActivated.addListener(handleTabActivated);
   browser.windows.onFocusChanged.addListener(handleWindowFocusChanged);
-});
-
-window.addEventListener("unload", function (e) {
-  updateOpenStatus(false);
-  browser.tabs.onUpdated.removeListener(handleTabUpdated);
-  browser.tabs.onActivated.removeListener(handleTabActivated);
-  browser.windows.onFocusChanged.removeListener(handleWindowFocusChanged);
 });
