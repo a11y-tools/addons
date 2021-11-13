@@ -20,7 +20,7 @@
 *      to reflect the listbox state.
 */
 
-function ListBox (domNode, notifyFn) {
+export function ListBox (domNode, notifyFn) {
   this.container      = domNode;
   this.notifyFn       = notifyFn;
 

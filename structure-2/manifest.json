@@ -8,11 +8,13 @@
   "permissions": [
     "<all_urls>",
     "find",
+    "storage",
     "tabs"
   ],
 
   "background": {
-    "scripts": [ "background.js", "listbox.js" ]
+    "page": "background.html",
+    "persistent": true
   },
 
   "browser_action": {

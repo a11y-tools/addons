@@ -1,14 +1,21 @@
+/*
+*   panel.js
+*/
+
+import { ListBox } from '../listbox.js';
+import { saveOptions } from '../storage.js';
+
 var myWindowId;
 var logInfo = false;
 var listBox;
 
 // Get message strings from locale-specific messages.json file
-let getMessage = browser.i18n.getMessage;
+const getMessage = browser.i18n.getMessage;
 
-let emptyContent         = getMessage("emptyContent");
-let noHeadingElements    = getMessage("noHeadingElements");
-let tabIsLoading         = getMessage("tabIsLoading");
-let protocolNotSupported = getMessage("protocolNotSupported");
+const emptyContent         = getMessage("emptyContent");
+const noHeadingElements    = getMessage("noHeadingElements");
+const tabIsLoading         = getMessage("tabIsLoading");
+const protocolNotSupported = getMessage("protocolNotSupported");
 
 function addLabelsAndHelpContent () {
   // page-title-label and headings-label
@@ -236,8 +243,8 @@ function updateSidebar (info) {
     // Update the headings box
     if (info.infoList.length) {
       headings.innerHTML = formatStructureInfo(info.infoList);
-      let gettingPage = browser.runtime.getBackgroundPage();
-      gettingPage.then(onGotPage, onError);
+      listBox = new ListBox(headings, onListBoxAction);
+      updateButton(true);
     }
     else {
       headings.innerHTML = `<div class="grid-message">${noHeadingElements}</div>`;
@@ -246,12 +253,6 @@ function updateSidebar (info) {
   else {
     pageTitle.textContent = info;
     headings.textContent = '';
-  }
-
-  // Reset listBox object after headings.innerHTML is updated
-  function onGotPage (page) {
-    listBox = new page.ListBox(headings, onListBoxAction);
-    updateButton(true);
   }
 }
 
@@ -304,16 +305,10 @@ browser.runtime.onMessage.addListener(
 //-------------------------------------------------------------
 
 /*
-*   Update variable in background script used for toggling sidebar
+*   Update storage property used for toggling sidebar
 */
-function updateOpenStatus (isOpen) {
-  function onGotPage (page) {
-    page.sidebarIsOpen = isOpen;
-    if (logInfo) console.log(`open status: ${isOpen}`);
-  }
-
-  let gettingPage = browser.runtime.getBackgroundPage();
-  gettingPage.then(onGotPage, onError);
+function updateOpenStatus (bValue) {
+  saveOptions({ isSidebarOpen: bValue});
 }
 
 /*
