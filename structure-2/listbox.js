@@ -20,7 +20,7 @@
 *      to reflect the listbox state.
 */
 
-export class ListBox {
+export default class ListBox {
   constructor (domNode, notifyFn) {
     this.container      = domNode;
     this.notifyFn       = notifyFn;

@@ -2,7 +2,7 @@
 *   panel.js
 */
 
-import { ListBox } from '../listbox.js';
+import ListBox from '../listbox.js';
 import { saveOptions } from '../storage.js';
 
 var myWindowId;
