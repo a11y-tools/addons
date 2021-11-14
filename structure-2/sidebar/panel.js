@@ -278,7 +278,8 @@ function updateContent (callerFn) {
 }
 
 /*
-*   getActiveTabInWindow: helper function
+*   getActiveTabFor: expected argument is ID of window with focus. The module
+*   variable myWindowId is updated by handleWindowFocusChanged event handler.
 */
 function getActiveTabFor (windowId) {
   return new Promise (function (resolve, reject) {
@@ -289,7 +290,6 @@ function getActiveTabFor (windowId) {
     )
   });
 }
-
 
 /*
 *   Listen for messages from content script
