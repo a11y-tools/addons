@@ -6,7 +6,7 @@ import ListBox from '../listbox.js';
 import { saveOptions } from '../storage.js';
 
 var myWindowId;
-var logInfo = false;
+var logInfo = true;
 var listBox;
 
 // Get message strings from locale-specific messages.json file
@@ -120,9 +120,8 @@ function removeHighlighting (event) {
 *   sendButtonActivationMessage
 */
 function sendButtonActivationMessage (data) {
-  browser.tabs.query({ windowId: myWindowId, active: true })
-  .then((tabs) => {
-    browser.tabs.sendMessage(tabs[0].id, data);
+  getActiveTabFor(myWindowId).then(tab => {
+    browser.tabs.sendMessage(tab.id, data);
   });
 }
 
@@ -265,24 +264,32 @@ function updateSidebar (info) {
 *   it calls the updateSidebar function.
 */
 function updateContent (callerFn) {
-  browser.tabs.query({ windowId: myWindowId, active: true })
-  .then((tabs) => {
-    let tab = tabs[0];
-    if (tab.url.indexOf('http:') != 0 && tab.url.indexOf('https:') != 0) {
-      updateSidebar (protocolNotSupported);
+  getActiveTabFor(myWindowId).then(tab => {
+    if (tab.url.indexOf('http:') === 0 || tab.url.indexOf('https:') === 0) {
+      browser.tabs.executeScript({ file: '../content.js' })
+      .then(() => {
+        if (logInfo) console.log(`Content script invoked by ${callerFn}`)
+      });
     }
     else {
-      let executing = browser.tabs.executeScript({
-        file: '../content.js'
-      });
-      executing.then(onExecuted, onError);
+      updateSidebar (protocolNotSupported);
     }
-  });
-
-  function onExecuted (result) {
-    if (logInfo) console.log(`Content script invoked by ${callerFn}`);
-  }
+  })
 }
+
+/*
+*   getActiveTabInWindow: helper function
+*/
+function getActiveTabFor (windowId) {
+  return new Promise (function (resolve, reject) {
+    let promise = browser.tabs.query({ windowId: windowId, active: true });
+    promise.then(
+      tabs => { resolve(tabs[0]) },
+      msg => { reject(new Error(`getActiveTabInWindow: ${msg}`)); }
+    )
+  });
+}
+
 
 /*
 *   Listen for messages from content script
