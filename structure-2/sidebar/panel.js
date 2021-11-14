@@ -165,11 +165,9 @@ function handleTabActivated (activeInfo) {
 }
 
 /*
-*   Handle window focus change events by checking whether the sidebar is
-*   open in the newly focused window, and if so, save the new window ID
-*   and update the sidebar content.
+*   Handle window focus change events: If the sidebar is open in the newly
+*   focused window, save the new window ID and update the sidebar content.
 */
-
 function handleWindowFocusChanged (windowId) {
   if (windowId !== myWindowId) {
     let checkingOpenStatus = browser.sidebarAction.isOpen({ windowId });
@@ -287,7 +285,7 @@ function updateContent (callerFn) {
 }
 
 /*
-*   Listen for messages from the content script and listbox
+*   Listen for messages from content script
 */
 browser.runtime.onMessage.addListener(
   function (message, sender) {
