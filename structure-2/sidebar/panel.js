@@ -48,7 +48,7 @@ function addLabelsAndHelpContent () {
 browser.windows.getCurrent({ populate: true }).then( (windowInfo) => {
   myWindowId = windowInfo.id;
   addLabelsAndHelpContent();
-  updateContent('getCurrent');
+  runContentScript('windows.getCurrent');
 });
 
 /*
@@ -145,7 +145,7 @@ function handleTabUpdated (tabId, changeInfo, tab) {
 
   clearTimeout(timeoutID);
   if (changeInfo.status === "complete") {
-    updateContent('handleTabUpdated');
+    runContentScript('handleTabUpdated');
   }
   else {
     timeoutID = setTimeout(function () {
@@ -160,7 +160,7 @@ function handleTabUpdated (tabId, changeInfo, tab) {
 function handleTabActivated (activeInfo) {
   if (logInfo) console.log(activeInfo);
 
-  updateContent('handleTabActivated');
+  runContentScript('handleTabActivated');
 }
 
 /*
@@ -176,7 +176,7 @@ function handleWindowFocusChanged (windowId) {
   function onGotStatus (result) {
     if (result) {
       myWindowId = windowId;
-      updateContent('onFocusChanged');
+      runContentScript('onFocusChanged');
       if (logInfo) console.log(`Focus changed to window: ${myWindowId}`);
     }
   }
@@ -191,10 +191,11 @@ function handleWindowFocusChanged (windowId) {
 //---------------------------------------------------------------
 
 /*
-*   getFormattedData: Convert the contentInfo data into an HTML string with
-*   internationalized labels.
+*   getFormattedTitle: Extract the page title from the page structure
+*   info collected and sent by the content script, and return it
+*   embedded in an HTML-formatted string.
 */
-function getFormattedData (info) {
+function getFormattedTitle (info) {
   return `<p>${info.title}</p>`;
 }
 
@@ -235,7 +236,7 @@ function updateSidebar (info) {
   // page-title and headings
   if (typeof info === 'object') {
     // Update the page-title box
-    pageTitle.innerHTML = getFormattedData(info);
+    pageTitle.innerHTML = getFormattedTitle(info);
 
     // Update the headings box
     if (info.infoList.length) {
@@ -259,11 +260,26 @@ function updateSidebar (info) {
 //------------------------------------------------------
 
 /*
-*   Update sidebar content by running the content script. When the
-*   onMessage handler receives the message from the content script,
-*   it calls the updateSidebar function.
+*   Listen for message from content script
 */
-function updateContent (callerFn) {
+browser.runtime.onMessage.addListener(
+  function (message, sender) {
+    switch (message.id) {
+      case 'info':
+        updateSidebar(message);
+        break;
+    }
+  }
+);
+
+/*
+*   Run the content script to initiate processing of the page structure info.
+*   Upon completion, the content script sends the data packaged in an 'info'
+*   message. When the onMessage handler receives the message, it calls the
+*   updateSidebar function, passing to it the message containing the page
+*   structure info.
+*/
+function runContentScript (callerFn) {
   getActiveTabFor(myWindowId).then(tab => {
     if (tab.url.indexOf('http:') === 0 || tab.url.indexOf('https:') === 0) {
       browser.tabs.executeScript({ file: '../content.js' })
@@ -290,19 +306,6 @@ function getActiveTabFor (windowId) {
     )
   });
 }
-
-/*
-*   Listen for messages from content script
-*/
-browser.runtime.onMessage.addListener(
-  function (message, sender) {
-    switch (message.id) {
-      case 'info':
-        updateSidebar(message);
-        break;
-    }
-  }
-);
 
 /*
 *   Add event listeners when sidebar loads
