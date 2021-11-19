@@ -1,5 +1,5 @@
 /*
-*   Helper functions
+*   traversal.js
 */
 
 function isCustom (element) {
@@ -21,7 +21,11 @@ function isSlot (element) {
 function getChildren (element) {
   // slot element
   if (isSlot(element)) {
-    return element.assignedElements();
+    const assignedElements = (element.assignedElements().length)
+      ? element.assignedElements()
+      : element.assignedElements({ flatten: true });
+    console.log(`<slot> name: ${element.name || 'null'}, items: ${assignedElements.length}`);
+    return assignedElements;
   }
   // custom element
   if (isCustom(element)) {
@@ -54,7 +58,7 @@ function getHeadingInfo () {
 
     // Process the child elements
     children.forEach(element => {
-      console.log(`element: ${element} ${element.tagName}`);
+      console.log(`${element.tagName} element`);
       // Save information if element meets criteria
       if (isHeading(element) && isVisible(element)) {
         let results = [];
