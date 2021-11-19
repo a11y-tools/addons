@@ -11,7 +11,7 @@ function isHeading (element) {
 }
 
 function isSlot (element) {
-  return (element.tagName === 'SLOT');
+  return (element instanceof HTMLSlotElement);
 }
 
 function getChildren (element) {
@@ -117,7 +117,7 @@ function isVisible (element) {
     }
   }
   // If element's parent is a shadowRoot, use the parent's host element
-  const parentNode = (element.parentNode instanceof DocumentFragment)
+  const parentNode = (element.parentNode instanceof ShadowRoot)
     ? element.parentNode.host : element.parentNode;
   return isVisible(parentNode);
 }
