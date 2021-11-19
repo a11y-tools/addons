@@ -282,6 +282,7 @@ browser.runtime.onMessage.addListener(
 function runContentScript (callerFn) {
   getActiveTabFor(myWindowId).then(tab => {
     if (tab.url.indexOf('http:') === 0 || tab.url.indexOf('https:') === 0) {
+      browser.tabs.executeScript({ file: '../traversal.js' });
       browser.tabs.executeScript({ file: '../content.js' })
       .then(() => {
         if (logInfo) console.log(`Content script invoked by ${callerFn}`)

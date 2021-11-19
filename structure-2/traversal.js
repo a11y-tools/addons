@@ -40,6 +40,9 @@ function getChildren (element) {
 function getHeadingInfo () {
   let infoList = [];
 
+  // Reset headingRefs array (defined in content.js)
+  headingRefs = [];
+
   function traverseDom (startElement) {
     // Get the child elements
     const children = getChildren(startElement);
@@ -56,6 +59,7 @@ function getHeadingInfo () {
           text: results.length ? results.join(' ') : ''
         }
         infoList.push(headingInfo);
+        headingRefs.push(element);
       }
       else {
         traverseDom(element);
