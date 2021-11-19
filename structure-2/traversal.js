@@ -2,7 +2,7 @@
 *   Helper functions
 */
 
-function isCustomElement (element) {
+function isCustom (element) {
   return (element.tagName.indexOf('-') > 0);
 }
 
@@ -14,13 +14,17 @@ function isSlot (element) {
   return (element instanceof HTMLSlotElement);
 }
 
+/*
+*   getChildren: Return an array of HTMLElement children based on element's
+*   properties related to web components.
+*/
 function getChildren (element) {
   // slot element
   if (isSlot(element)) {
     return element.assignedElements();
   }
   // custom element
-  if (isCustomElement(element)) {
+  if (isCustom(element)) {
     if (element.shadowRoot !== null) {
       return Array.from(element.shadowRoot.children);
     }
@@ -33,9 +37,10 @@ function getChildren (element) {
 }
 
 /*
-*   getHeadingInfo: Recursively find each visible heading element in the
-*   document, collect its text content from visible child elements and store
-*   all relevant info in the returned infoList.
+*   getHeadingInfo: (1) Recursively find each visible heading element;
+*   (2) collect its text content from visible child elements;
+*   (3) store all relevant info in the returned infoList array;
+*   (4) save a reference to the element in the headingRefs array.
 */
 function getHeadingInfo () {
   let infoList = [];
@@ -44,7 +49,7 @@ function getHeadingInfo () {
   headingRefs = [];
 
   function traverseDom (startElement) {
-    // Get the child elements
+    // Get an array of child elements
     const children = getChildren(startElement);
 
     // Process the child elements
