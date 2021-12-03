@@ -150,7 +150,7 @@ function saveInfo (element, info) {
     return;
   }
   const landmarkInfo = testForLandmark(element);
-  if (landmarkInfo) {
+  if (landmarkInfo && landmarkInfo.visible) {
     info.landmarks.push(landmarkInfo);
   }
 }
