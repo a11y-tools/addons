@@ -235,6 +235,10 @@ function updateSidebar (message) {
 
   // page-title and headings
   if (typeof message === 'object') {
+
+    message.info.landmarks.forEach(landmark =>
+      console.log(`${landmark.role}: ${landmark.name}`));
+
     // Update the page-title box
     pageTitle.innerHTML = getFormattedTitle(message);
 

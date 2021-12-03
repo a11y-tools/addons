@@ -17,15 +17,16 @@ function isSlot (element) {
 function getLandmarkInfo (element, role) {
   return {
     role: role,
-    name: getAccessibleName(element)
+    name: getAccessibleName(element),
+    visible: isVisible(element)
   }
 }
 
 /*
-*   isLandmark: If element is a landmark, return an object with properties
-*   'role' and 'name'; otherwise return null.
+*   testForLandmark: If element is a landmark, return an object with properties
+*   'role', 'name' and 'visible'; otherwise return null.
 */
-function isLandmark (element) {
+function testForLandmark (element) {
   const roles = [
     'application',
     'banner',
@@ -79,17 +80,11 @@ function isLandmark (element) {
       if (!(isDescendantOfNames(element) || isDescendantOfRoles(element))) {
         return getLandmarkInfo(element, 'contentinfo');
       }
-      else {
-        return null;
-      }
     }
 
     if (tagName === 'header') {
       if (!(isDescendantOfNames(element) || isDescendantOfRoles(element))) {
         return getLandmarkInfo(element, 'banner');
-      }
-      else {
-        return null;
       }
     }
 
@@ -98,18 +93,12 @@ function isLandmark (element) {
       if (name.length) {
         return { role: 'form', name: name };
       }
-      else {
-        return null;
-      }
     }
 
     if (tagName === 'section') {
       const name = getAccessibleName(element);
       if (name.length) {
         return { role: 'region', name: name };
-      }
-      else {
-        return null;
       }
     }
 
@@ -158,9 +147,18 @@ function saveInfo (element, info) {
     const headingInfo = getHeadingInfo(element);
     info.headings.push(headingInfo);
     headingRefs.push(element);
+    return;
+  }
+  const landmarkInfo = testForLandmark(element);
+  if (landmarkInfo) {
+    info.landmarks.push(landmarkInfo);
   }
 }
 
+/*
+*   getStructureInfo: Traverse DOM and store relevant info for any elements
+*   of interest in the 'info' object; return 'info' object.
+*/
 function getStructureInfo () {
   const info = {
     headings: [],
