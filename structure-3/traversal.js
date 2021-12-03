@@ -57,7 +57,11 @@ function testForLandmark (element) {
     if (value === 'region') {
       const name = getAccessibleName(element);
       if (name.length) {
-        return { role: 'region', name: name };
+        return {
+          role: 'region',
+          name: name,
+          visible: isVisible(element)
+        };
       }
     }
   }
@@ -91,14 +95,22 @@ function testForLandmark (element) {
     if (tagName === 'form') {
       const name = getAccessibleName(element);
       if (name.length) {
-        return { role: 'form', name: name };
+        return {
+          role: 'form',
+          name: name,
+          visible: isVisible(element)
+        };
       }
     }
 
     if (tagName === 'section') {
       const name = getAccessibleName(element);
       if (name.length) {
-        return { role: 'region', name: name };
+        return {
+          role: 'region',
+          name: name,
+          visible: isVisible(element)
+        };
       }
     }
 
