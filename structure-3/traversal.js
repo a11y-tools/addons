@@ -14,10 +14,18 @@ function isSlot (element) {
   return (element instanceof HTMLSlotElement);
 }
 
-function getLandmarkInfo (element, role) {
+/*
+*   getLandmarkInfo: The 'name' param will be defined when the accessible name
+*   was already evaluated as a criterion for determining whether 'element' is
+*   to be considered a landmark (based on 'ARIA in HTML' specification).
+*/
+function getLandmarkInfo (element, role, name) {
+  const accessibleName =
+    (name === undefined) ? getAccessibleName(element) : name;
+
   return {
     role: role,
-    name: getAccessibleName(element),
+    name: accessibleName,
     visible: isVisible(element)
   }
 }
@@ -57,12 +65,9 @@ function testForLandmark (element) {
     if (value === 'region') {
       const name = getAccessibleName(element);
       if (name.length) {
-        return {
-          role: 'region',
-          name: name,
-          visible: isVisible(element)
-        };
+        return getLandmarkInfo(element, 'region', name);
       }
+      return null;
     }
   }
   else { // element does not have 'role' attribute
@@ -84,34 +89,30 @@ function testForLandmark (element) {
       if (!(isDescendantOfNames(element) || isDescendantOfRoles(element))) {
         return getLandmarkInfo(element, 'contentinfo');
       }
+      return null;
     }
 
     if (tagName === 'header') {
       if (!(isDescendantOfNames(element) || isDescendantOfRoles(element))) {
         return getLandmarkInfo(element, 'banner');
       }
+      return null;
     }
 
     if (tagName === 'form') {
       const name = getAccessibleName(element);
       if (name.length) {
-        return {
-          role: 'form',
-          name: name,
-          visible: isVisible(element)
-        };
+        return getLandmarkInfo(element, 'form', name);
       }
+      return null;
     }
 
     if (tagName === 'section') {
       const name = getAccessibleName(element);
       if (name.length) {
-        return {
-          role: 'region',
-          name: name,
-          visible: isVisible(element)
-        };
+        return getLandmarkInfo(element, 'region', name);
       }
+      return null;
     }
 
   } // end else
