@@ -182,12 +182,12 @@ function getStructureInfo () {
   headingRefs = [];
 
   function traverseDom (startElement) {
-    // Get an array of child elements
+    // getChildren returns an array of elements based on criteria related
+    // to whether startElement is (or is part of) a custom element
     const children = getChildren(startElement);
 
-    // Process the child elements
     children.forEach(element => {
-      // Save information if element meets criteria
+      // Save information if element meets certain criteria
       saveInfo(element, info);
 
       // Recursively visit children of element
