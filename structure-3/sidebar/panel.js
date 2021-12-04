@@ -179,7 +179,7 @@ function handleTabUpdated (tabId, changeInfo, tab) {
 *   Handle tabs.onActivated event
 */
 function handleTabActivated (activeInfo) {
-  if (debug) console.log(activeInfo);
+  if (debug) console.log('activeInfo: ', activeInfo);
 
   runContentScripts('handleTabActivated');
 }
