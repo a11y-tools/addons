@@ -5,9 +5,10 @@
 import ListBox from '../listbox.js';
 import { saveOptions } from '../storage.js';
 
+var contentPort;
 var myWindowId;
-var logInfo = true;
 var listBox;
+var debug = true;
 
 // Get message strings from locale-specific messages.json file
 const getMessage = browser.i18n.getMessage;
@@ -42,13 +43,33 @@ function addLabelsAndHelpContent () {
 }
 
 /*
-*   When the sidebar loads, store the ID of the current window and update
-*   the sidebar content.
+**  Set up listeners/handlers for connection and messages from content script
+*/
+browser.runtime.onConnect.addListener(connectionHandler);
+
+function connectionHandler (port) {
+  if (debug) console.log(`port.name: ${port.name}`);
+  contentPort = port;
+  contentPort.onMessage.addListener(portMessageHandler);
+  contentPort.postMessage({ id: 'getInfo' });
+}
+
+function portMessageHandler (message) {
+  switch (message.id) {
+    case 'info':
+      updateSidebar(message);
+      break;
+  }
+}
+
+/*
+*   When the sidebar loads, store the ID of the current window; update sidebar
+*   labels and help content, and run content scripts to establish connection.
 */
 browser.windows.getCurrent({ populate: true }).then( (windowInfo) => {
   myWindowId = windowInfo.id;
   addLabelsAndHelpContent();
-  runContentScript('windows.getCurrent');
+  runContentScripts('windows.getCurrent');
 });
 
 /*
@@ -145,7 +166,7 @@ function handleTabUpdated (tabId, changeInfo, tab) {
 
   clearTimeout(timeoutID);
   if (changeInfo.status === "complete") {
-    runContentScript('handleTabUpdated');
+    runContentScripts('handleTabUpdated');
   }
   else {
     timeoutID = setTimeout(function () {
@@ -158,9 +179,9 @@ function handleTabUpdated (tabId, changeInfo, tab) {
 *   Handle tabs.onActivated event
 */
 function handleTabActivated (activeInfo) {
-  if (logInfo) console.log(activeInfo);
+  if (debug) console.log(activeInfo);
 
-  runContentScript('handleTabActivated');
+  runContentScripts('handleTabActivated');
 }
 
 /*
@@ -176,13 +197,13 @@ function handleWindowFocusChanged (windowId) {
   function onGotStatus (result) {
     if (result) {
       myWindowId = windowId;
-      runContentScript('onFocusChanged');
-      if (logInfo) console.log(`Focus changed to window: ${myWindowId}`);
+      runContentScripts('onFocusChanged');
+      if (debug) console.log(`Focus changed to window: ${myWindowId}`);
     }
   }
 
   function onInvalidId (error) {
-    if (logInfo) console.log(`onInvalidId: ${error}`);
+    if (debug) console.log(`onInvalidId: ${error}`);
   }
 }
 
@@ -258,32 +279,19 @@ function updateSidebar (message) {
 }
 
 //------------------------------------------------------
-//  Functions that run the content script and initiate
-//  processing of the data it sends via messaging
+//  Functions that run the content scripts to initiate
+//  processing of the data to be sent via port message
 //------------------------------------------------------
 
 /*
-*   Listen for message from content script
+*   runContentScripts: When content.js is executed, it established a port
+*   connection with this script (panel.js), which in turn has a port message
+*   handler listening for the 'info' message. When that message is received,
+*   the handler calls the updateSidebar function with the structure info.
 */
-browser.runtime.onMessage.addListener(
-  function (message, sender) {
-    switch (message.id) {
-      case 'info':
-        updateSidebar(message);
-        break;
-    }
-  }
-);
+function runContentScripts (callerFn) {
+  if (debug) console.log(`runContentScripts invoked by ${callerFn}`);
 
-/*
-*   runContentScript: Update the structure info for the active tab by running
-*   the content scripts. When the last script, content.js, is run, it sends
-*   the collected data packaged in an 'info' message back to this script. When
-*   the onMessage handler receives the message, it calls the updateSidebar
-*   function with the message containing the page structure info.
-*/
-function runContentScript (callerFn) {
-  if (logInfo) console.log(`runContentScript invoked by ${callerFn}`);
   getActiveTabFor(myWindowId).then(tab => {
     if (tab.url.indexOf('http:') === 0 || tab.url.indexOf('https:') === 0) {
       browser.tabs.executeScript({ file: '../utils.js' });
@@ -293,7 +301,7 @@ function runContentScript (callerFn) {
     else {
       updateSidebar (protocolNotSupported);
     }
-  })
+  });
 }
 
 /*

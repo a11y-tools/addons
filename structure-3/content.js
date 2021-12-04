@@ -3,6 +3,7 @@
 */
 var headingRefs;
 var currentHeading;
+var debug = true;
 
 var highlightClass = 'structureExtensionHighlight';
 var highlightProperties = `{
@@ -20,6 +21,22 @@ var focusProperties = `{
 }`;
 
 /*
+**  Connect to panel.js script and set up listener/handler
+*/
+var panelPort = browser.runtime.connect({ name: 'content' });
+
+panelPort.onMessage.addListener(messageHandler);
+
+function messageHandler (message) {
+  switch (message.id) {
+    case 'getInfo':
+      if (debug) console.log(`content: 'getInfo' message`);
+      getStructureInfo(panelPort);
+      break;
+  }
+}
+
+/*
 *   Add highlighting stylesheet to document.
 */
 (function () {
@@ -27,15 +44,6 @@ var focusProperties = `{
   sheet.innerHTML = `.${highlightClass} ${highlightProperties} .${focusClass}:focus ${focusProperties}`;
   document.body.appendChild(sheet);
 })();
-
-/*
-*   Send 'info' message with page and heading information to sidebar script.
-*/
-browser.runtime.sendMessage({
-  id: 'info',
-  info: getStructureInfo(),
-  title: document.title
-});
 
 /*
 *   Respond to 'find' and 'clear' messages by highlighting and scrolling to

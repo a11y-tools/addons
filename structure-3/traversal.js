@@ -172,7 +172,7 @@ function saveInfo (element, info) {
 *   getStructureInfo: Traverse DOM and store relevant info for any elements
 *   of interest in the 'info' object; return 'info' object.
 */
-function getStructureInfo () {
+function getStructureInfo (panelPort) {
   const info = {
     headings: [],
     landmarks: []
@@ -196,5 +196,13 @@ function getStructureInfo () {
   }
 
   traverseDom(document.body);
-  return info;
+
+  // Send structure info to the panel.js script
+  const message = {
+    id: 'info',
+    info: info,
+    title: document.title
+  };
+
+  panelPort.postMessage(message);
 }
