@@ -276,21 +276,19 @@ browser.runtime.onMessage.addListener(
 );
 
 /*
-*   Run the content script to initiate processing of the page structure info.
-*   Upon completion, the content script sends the data packaged in an 'info'
-*   message. When the onMessage handler receives the message, it calls the
-*   updateSidebar function, passing to it the message containing the page
-*   structure info.
+*   runContentScript: Update the structure info for the active tab by running
+*   the content scripts. When the last script, content.js, is run, it sends
+*   the collected data packaged in an 'info' message back to this script. When
+*   the onMessage handler receives the message, it calls the updateSidebar
+*   function with the message containing the page structure info.
 */
 function runContentScript (callerFn) {
+  if (logInfo) console.log(`runContentScript invoked by ${callerFn}`);
   getActiveTabFor(myWindowId).then(tab => {
     if (tab.url.indexOf('http:') === 0 || tab.url.indexOf('https:') === 0) {
       browser.tabs.executeScript({ file: '../utils.js' });
       browser.tabs.executeScript({ file: '../traversal.js' });
-      browser.tabs.executeScript({ file: '../content.js' })
-      .then(() => {
-        if (logInfo) console.log(`Content script invoked by ${callerFn}`)
-      });
+      browser.tabs.executeScript({ file: '../content.js' });
     }
     else {
       updateSidebar (protocolNotSupported);
