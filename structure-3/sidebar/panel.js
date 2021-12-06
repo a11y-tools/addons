@@ -91,11 +91,11 @@ function onListBoxAction (data) {
 
   switch (data.action) {
     case 'navigate':
-      console.log(`navigate: ${data.index}`);
+      if (debug) console.log(`navigate: ${data.index}`);
       updateButton(false);
       break;
     case 'activate':
-      console.log(`activate: ${data.index}`)
+      if (debug) console.log(`activate: ${data.index}`)
       sendButtonActivationMessage({
         id: 'find',
         index: data.index
@@ -255,9 +255,15 @@ function updateSidebar (message) {
 
   if (typeof message === 'object') {
     const info = message.info;
-    console.log(`number of landmarks: ${info.landmarks.length}`);
-    info.landmarks.forEach(landmark =>
-      console.log(`${landmark.role}: ${landmark.name}`));
+
+    if (debug) {
+      console.log('------------------------')
+      console.log(`number of landmarks: ${info.landmarks.length}`);
+      let count = 0;
+      info.landmarks.forEach(landmark =>
+        console.log(`${++count}. ${landmark.role}: ${landmark.name}`));
+      console.log('------------------------')
+    }
 
     // Update the page-title box
     pageTitle.innerHTML = getFormattedTitle(message);
@@ -294,9 +300,9 @@ function runContentScripts (callerFn) {
 
   getActiveTabFor(myWindowId).then(tab => {
     if (tab.url.indexOf('http:') === 0 || tab.url.indexOf('https:') === 0) {
-      browser.tabs.executeScript({ file: '../utils.js' });
-      browser.tabs.executeScript({ file: '../traversal.js' });
-      browser.tabs.executeScript({ file: '../content.js' });
+      browser.tabs.executeScript(tab.id, { file: '../utils.js' });
+      browser.tabs.executeScript(tab.id, { file: '../traversal.js' });
+      browser.tabs.executeScript(tab.id, { file: '../content.js' });
     }
     else {
       updateSidebar (protocolNotSupported);
