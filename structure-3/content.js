@@ -3,7 +3,6 @@
 */
 var headingRefs;
 var currentHeading;
-var debug = true;
 
 var highlightClass = 'structureExtensionHighlight';
 var highlightProperties = `{
@@ -30,7 +29,6 @@ panelPort.onMessage.addListener(messageHandler);
 function messageHandler (message) {
   switch (message.id) {
     case 'getInfo':
-      if (debug) console.log(`content: 'getInfo' message`);
       getStructureInfo(panelPort);
       break;
   }
