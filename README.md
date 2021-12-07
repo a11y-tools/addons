@@ -74,8 +74,8 @@ adding the following new features:
 
 ### 4. headings
 
-This prototype builds on the feature set of the `traversal` prototype by
-adding the following new features:
+The `headings-*` prototypes build on the feature set of the `traversal`
+prototype.
 
 * The sidebar now displays headings information for the active tab in a box
   labeled `Headings`, using CSS grid layout features. Each heading item has
@@ -101,3 +101,36 @@ adding the following new features:
   directly, replacing the use of the `TreeWalker` API. Another new function,
   `getDescendantTextContent`, recursively handles the collection of text
   content for each heading.
+
+### 5. structure
+
+The `structure-*` prototypes build on the feature set created in the series of
+`headings-*` prototypes.
+
+* structure-1
+
+  * Adds the `listbox.js` script and its companion `listbox.css` to encapsulate
+    the functionality of the headings list.
+
+* structure-2
+
+  * Refactored to utilize ES6 `modules` wherever possible.
+  * The `listbox.js` script was converted to a JavaScript class that is the
+    default export of the module.
+  * Reworked DOM traversal to include `custom elements` (by examining the
+    `shadow root` children) and any `slot` elements they may contain.
+  * The `content.js` script was split into two scripts with the addition of
+    `traversal.js`.
+  * The `storage.js` script was added as a facility for future versions if and
+    when extension options / preferences are needed.
+
+* structure-3
+
+  * Reworked the messaging scheme to use a persistent port for communication
+    between the `panel.js` and `content.js` scripts.
+  * Although not yet displayed in the sidebar, includes collecting information
+    on landmarks as well as headings.
+  * Refactored the `traversal.js` script such that the DOM traversal function
+    is greatly simplified. It now relies on a new function named `saveInfo`.
+  * After adding the function `testForLandmark`, the `traversal.js` was split
+    into two scripts, moving utility code into `utils.js`
