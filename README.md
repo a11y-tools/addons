@@ -134,3 +134,19 @@ The `structure-*` prototypes build on the feature set created in the series of
     is greatly simplified. It now relies on a new function named `saveInfo`.
   * After adding the function `testForLandmark`, the `traversal.js` was split
     into two scripts, moving utility code into `utils.js`
+
+* structure-4
+
+  * Modified the `getStructureInfo` function to handle HTML documents that
+    omit the `BODY` tag. In such cases, it starts the DOM traversal at the
+    `document.documentElement` element (usually the `HTML` element).
+  * Added the `isSkippable` function to skip `meta` tags such as `SCRIPT` and
+    `STYLE` when traversing the DOM.
+  * Reworked console logging in `panel.js` to use the `logToConsole` function,
+    which calls `console.debug` instead of `console.log`.
+  * Added the ability to keep track of the landmarks hierarchy, i.e. all of
+    the ancestor / descendant relationships, by adding a tree data structure
+    in the `info` object used by `getStructureInfo`. The tree object is built
+    with objects returned by the `getLandmarkNode` function.
+  * Added the `logLandmarkNodes` function to display (in the console) the new
+    landmarks hierarchy of ancestor / descendant relationships.
