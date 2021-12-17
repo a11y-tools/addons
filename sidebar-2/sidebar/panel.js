@@ -1,3 +1,11 @@
+
+import { TabSet, TabList, TabButton, TabPanel } from './TabSet.js';
+
+customElements.define('tab-set', TabSet);
+customElements.define('tab-list', TabList);
+customElements.define('tab-button', TabButton);
+customElements.define('tab-panel', TabPanel);
+
 var myWindowId;
 
 /*
