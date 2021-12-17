@@ -8,9 +8,23 @@
 
 <body>
   <h2>URL of active tab</h2>
+
+  <tab-set>
+    <tab-list>
+      <tab-button>Landmarks</tab-button>
+      <tab-button>Headings</tab-button>
+    </tab-list>
+    <tab-panel slot="panel">
+      Panel 1
+    </tab-panel>
+    <tab-panel slot="panel">
+      Panel 2
+    </tab-panel>
+  </tab-set>
+
   <div id = "content"></div>
   <p>Demonstrates that sidebar content updates when a new page loads or a different tab is selected.</p>
-  <script src="panel.js"></script>
+  <script src="panel.js" type="module"></script>
 </body>
 
 </html>
