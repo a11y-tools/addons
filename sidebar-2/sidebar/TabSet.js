@@ -1,5 +1,12 @@
 /*
 *   TabSet.js
+*
+*   Compositional structure of custom elements:
+*
+*   TabSet [contains]
+*     TabList (1) [contains]
+*       TabButton [2 or more]
+*     TabPanel [2 or more]
 */
 
 function htmlTemplate (tplstr) {
@@ -31,6 +38,30 @@ class TabSet extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(htmlTemplate(tabSetHtml));
+    this.buttons = [];
+    this.panels = [];
+  }
+
+  register (element) {
+    if (element instanceof HTMLButtonElement) {
+      console.log(`register: ${element.id}`);
+      this.buttons.push(element);
+      return;
+    }
+
+    if (element instanceof HTMLDivElement) {
+      console.log(`register: ${element.id}`);
+      this.panels.push(element);
+      return;
+    }
+  }
+
+  get tabButtons () {
+    return this.buttons;
+  }
+
+  get tabPanels () {
+    return this.panels;
   }
 }
 
@@ -48,6 +79,10 @@ class TabList extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(htmlTemplate(tabListHtml));
+  }
+
+  register (element) {
+    this.parentElement.register(element); // TabSet
   }
 }
 
@@ -79,12 +114,17 @@ class TabButton extends HTMLElement {
     this.button = this.shadowRoot.querySelector('button');
   }
 
+  register (element) {
+    this.parentElement.register(element); // TabList
+  }
+
   static count = 0;
   connectedCallback () {
     TabButton.count++;
     this.button.setAttribute('id', `button-${TabButton.count}`);
     this.button.setAttribute('aria-controls', `panel-${TabButton.count}`);
     this.button.setAttribute('aria-selected', TabButton.count === 1 ? 'true' : 'false');
+    this.register(this.button);
   }
 }
 
@@ -114,11 +154,16 @@ class TabPanel extends HTMLElement {
     this.panel = this.shadowRoot.querySelector('div[role="tabpanel"]');
   }
 
+  register (element) {
+    this.parentElement.register(element); // TabSet
+  }
+
   static count = 0;
   connectedCallback () {
     TabPanel.count++;
     this.panel.setAttribute('id', `panel-${TabPanel.count}`);
     this.panel.setAttribute('aria-labelledby', `button-${TabPanel.count}`);
+    this.register(this.panel);
   }
 }
 
