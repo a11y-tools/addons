@@ -1,0 +1,36 @@
+{
+
+  "manifest_version": 2,
+  "name": "Sidebar Demo",
+  "description": "Demonstrates content updates and toggling on and off of sidebar.",
+  "version": "0.1",
+  "applications": {
+    "gecko": {
+      "strict_min_version": "54.0a1"
+    }
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_title": "Sidebar Demo"
+  },
+
+  "sidebar_action": {
+    "default_title" : "Sidebar Demo",
+    "default_panel": "sidebar/panel.html"
+  },
+
+  "permissions": ["tabs"],
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      }
+    }
+  }
+
+}
