@@ -29,26 +29,3 @@ browser.windows.getCurrent({populate: true}).then((windowInfo) => {
   myWindowId = windowInfo.id;
   updateContent();
 });
-
-/*
-*   Generic error handler
-*/
-function onError (error) {
-  console.log(`Error: ${error}`);
-}
-
-/*
-*   Update the variable in background script used for toggling sidebar
-*/
-function updateOpenStatus (isOpen) {
-  function onGotPage (page) {
-    page.sidebarIsOpen = isOpen;
-    console.log(`open status: ${isOpen}`);
-  }
-
-  let gettingPage = browser.runtime.getBackgroundPage();
-  gettingPage.then(onGotPage, onError);
-}
-
-window.addEventListener("load",   function (e) { updateOpenStatus(true) });
-window.addEventListener("unload", function (e) { updateOpenStatus(false) });
