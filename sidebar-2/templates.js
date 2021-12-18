@@ -2,26 +2,7 @@
 *   templates.js
 */
 
-const styleTmpl = `
-<style>
-  #button-1 {
-    color: blue;
-  }
-  #button-2 {
-    color: green;
-  }
-  div[role="tabpanel"] {
-    height: 100px;
-    border: 1px solid #ddd;
-    padding: 5px;
-  }
-  .is-hidden {
-    display: none;
-  }
-</style>
-`
-
-const htmlTmpl = `
+export const htmlTmpl = `
 <div class="tabset">
   <div role="tablist">
     <button role="tab" type="button" id="button-1" aria-controls="panel-1" aria-selected="true" tabindex="-1">
@@ -39,4 +20,3 @@ const htmlTmpl = `
   </div>
 </div>
 `
-export { styleTmpl, htmlTmpl };

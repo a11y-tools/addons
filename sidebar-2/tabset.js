@@ -2,7 +2,7 @@
 *   tabset.js
 */
 
-import { styleTmpl, htmlTmpl } from './templates.js';
+import { htmlTmpl } from './templates.js';
 
 const template = document.createElement('template');
 template.innerHTML = htmlTmpl;
@@ -11,7 +11,13 @@ class TabSet extends HTMLElement {
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.innerHTML = styleTmpl;
+
+    // Use external CSS stylesheet
+    const link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'tabset.css');
+    this.shadowRoot.appendChild(link);
+
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 

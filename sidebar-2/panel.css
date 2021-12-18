@@ -7,12 +7,5 @@ html, body {
 
 h2 {
   font-size: 133%;
-}
-
-#content {
-  /*
-  height: 30%;
-  border: 1px solid #ddd;
-  padding: 5px;
-  */
+  margin-bottom: 2rem;
 }

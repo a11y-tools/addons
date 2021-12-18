@@ -1,6 +1,17 @@
+div {
+  --illini-orange:      #FF552E;
+  --industrial-blue:    #1D58A7;
+}
+
 .tabs {
   width: 20em;
   font-family: "lucida grande", sans-serif;
+}
+
+div[role="tabpanel"] {
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 [role="tablist"] {
@@ -40,7 +51,8 @@
 }
 
 [role="tab"][aria-selected="true"]:not(:focus):not(:hover)::before {
-  border-top: 5px solid hsl(218deg 96% 48%);
+  /* border-top: 5px solid hsl(218deg 96% 48%); */
+  border-top: 5px solid var(--industrial-blue);
 }
 
 [role="tab"][aria-selected="true"]::after {
@@ -65,7 +77,8 @@
 
 [role="tab"]:hover::before,
 [role="tab"]:focus::before {
-  border-color: hsl(20deg 96% 48%);
+  /* border-color: hsl(20deg 96% 48%); */
+  border-color: var(--illini-orange);
 }
 
 [role="tabpanel"] {
