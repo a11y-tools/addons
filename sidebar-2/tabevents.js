@@ -9,16 +9,13 @@
 *       are contained within a TabSet element.
 *   (2) These arrays can be obtained from the TabSet element by calling its
 *       'tabs' and 'panels' getters (e.g. 'let myTabs = tabSet.tabs').
-*   (3) The TabSet object passes these as JavaScript arrays by converting the
-*       nodeLists it obtains with querySelectorAll by using 'Array.from'.
+*   (3) The getter methods return these as JavaScript arrays by converting
+*       the nodeLists obtained with querySelectorAll using 'Array.from'.
 */
 export default class TabEvents {
   constructor (tabs, panels) {
     this.tabs = tabs;
     this.panels = panels;
-
-    console.log(`this.tabs.length: ${this.tabs.length}`);
-    console.log(`this.panels.length: ${this.panels.length}`);
 
     for (let tab of this.tabs) {
       tab.addEventListener('click', this.clickHandler.bind(this));
