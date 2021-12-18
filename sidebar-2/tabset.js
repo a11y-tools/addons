@@ -15,11 +15,6 @@ class TabSet extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  connectedCallback () {
-    this._tabs = this.shadowRoot.querySelectorAll('[role="tab"]');
-    this._panels = this.shadowRoot.querySelectorAll('[role="tabpanel"]');
-  }
-
   get tabs () {
     const tabsArray = [];
     tabsArray.push(...this.shadowRoot.querySelectorAll('[role="tab"]'));

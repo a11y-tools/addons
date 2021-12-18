@@ -1,5 +1,5 @@
 /*
-*   TabEvents.js
+*   tabevents.js
 */
 
 export default class TabEvents {
