@@ -1,6 +1,7 @@
 div {
-  --illini-orange:      #FF552E;
-  --industrial-blue:    #1D58A7;
+  --illini-blue:     hsl(216, 60%, 18%);  /* #13294b */
+  --illini-orange:   hsl(11deg 100% 59%); /* #FF552E */
+  --industrial-blue: hsl(214deg 70% 38%); /* #1D58A7 */
 }
 
 .tabs {
@@ -40,7 +41,8 @@ div[role="tabpanel"] {
   right: -1px;
   left: -1px;
   border-radius: 0.2em 0.2em 0 0;
-  border-top: 3px solid hsl(20deg 96% 48%);
+  /* border-top: 3px solid hsl(20deg 96% 48%); */
+  border-top: 3px solid var(--illini-orange);
   content: "";
 }
 
@@ -52,7 +54,7 @@ div[role="tabpanel"] {
 
 [role="tab"][aria-selected="true"]:not(:focus):not(:hover)::before {
   /* border-top: 5px solid hsl(218deg 96% 48%); */
-  border-top: 5px solid var(--industrial-blue);
+  border-top: 5px solid var(--illini-blue);
 }
 
 [role="tab"][aria-selected="true"]::after {
@@ -97,7 +99,8 @@ div[role="tabpanel"] {
 
 [role="tabpanel"]:focus {
   border-color: hsl(20deg 96% 48%);
-  box-shadow: 0 0 0.2em hsl(20deg 96% 48%);
+  /* box-shadow: 0 0 0.2em hsl(20deg 96% 48%); */
+  box-shadow: 0 0 0.2em var(--illini-orange);
   outline: 0;
 }
 
@@ -106,7 +109,8 @@ div[role="tabpanel"] {
   bottom: 0;
   right: -1px;
   left: -1px;
-  border-bottom: 3px solid hsl(20deg 96% 48%);
+  /* border-bottom: 3px solid hsl(20deg 96% 48%); */
+  border-bottom: 3px solid var(--illini-orange);
   border-radius: 0 0 0.2em 0.2em;
   content: "";
 }
