@@ -2,6 +2,16 @@
 *   tabevents.js
 */
 
+/*
+*   TabEvents
+*
+*   (1) The constructor takes two arguments, both arrays of DOM elements that
+*       are contained within a TabSet element.
+*   (2) These arrays can be obtained from the TabSet element by calling its
+*       'tabs' and 'panels' getters (e.g. 'let myTabs = tabSet.tabs').
+*   (3) The TabSet object passes these as JavaScript arrays by converting the
+*       nodeLists it obtains with querySelectorAll by using 'Array.from'.
+*/
 export default class TabEvents {
   constructor (tabs, panels) {
     this.tabs = tabs;
