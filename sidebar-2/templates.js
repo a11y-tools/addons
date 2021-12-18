@@ -5,10 +5,10 @@
 export const htmlTmpl = `
 <div class="tabset">
   <div role="tablist">
-    <button role="tab" type="button" id="tab-1" aria-controls="panel-1" aria-selected="true" tabindex="-1">
+    <button role="tab" id="tab-1" type="button" aria-controls="panel-1" aria-selected="true" tabindex="-1">
       <slot name="tab-1"></slot>
     </button>
-    <button role="tab" type="button" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">
+    <button role="tab" id="tab-2" type="button" aria-controls="panel-2" aria-selected="false" tabindex="-1">
       <slot name="tab-2"></slot>
     </button>
   </div>
