@@ -1,7 +1,10 @@
 div {
-  --illini-blue:     hsl(216, 60%, 18%);  /* #13294b */
+  --illini-blue:     hsl(216deg 50% 18%); /* #13294b */
   --illini-orange:   hsl(11deg 100% 59%); /* #FF552E */
   --industrial-blue: hsl(214deg 70% 38%); /* #1D58A7 */
+  --light-grey:      hsl(219deg  1% 72%);
+  --off-white:       hsl(220deg 20% 94%);
+  --almost-white:    hsl(220deg 43% 99%);
 }
 
 .tabs {
@@ -24,13 +27,13 @@ div[role="tabpanel"] {
   position: relative;
   margin: 0;
   padding: 0.3em 0.5em 0.4em;
-  border: 1px solid hsl(219deg 1% 72%);
+  border: 1px solid var(--light-grey);
   border-radius: 0.2em 0.2em 0 0;
-  box-shadow: 0 0 0.2em hsl(219deg 1% 72%);
+  box-shadow: 0 0 0.2em var(--light-grey);
   overflow: visible;
   font-family: inherit;
   font-size: inherit;
-  background: hsl(220deg 20% 94%);
+  background: var(--off-white);
 }
 
 [role="tab"]:hover::before,
@@ -41,19 +44,17 @@ div[role="tabpanel"] {
   right: -1px;
   left: -1px;
   border-radius: 0.2em 0.2em 0 0;
-  /* border-top: 3px solid hsl(20deg 96% 48%); */
   border-top: 3px solid var(--illini-orange);
   content: "";
 }
 
 [role="tab"][aria-selected="true"] {
   border-radius: 0;
-  background: hsl(220deg 43% 99%);
+  background: var(--almost-white);
   outline: 0;
 }
 
 [role="tab"][aria-selected="true"]:not(:focus):not(:hover)::before {
-  /* border-top: 5px solid hsl(218deg 96% 48%); */
   border-top: 5px solid var(--illini-blue);
 }
 
@@ -64,7 +65,7 @@ div[role="tabpanel"] {
   right: 0;
   left: 0;
   height: 0.3em;
-  background: hsl(220deg 43% 99%);
+  background: var(--almost-white);
   box-shadow: none;
   content: "";
 }
@@ -79,7 +80,6 @@ div[role="tabpanel"] {
 
 [role="tab"]:hover::before,
 [role="tab"]:focus::before {
-  /* border-color: hsl(20deg 96% 48%); */
   border-color: var(--illini-orange);
 }
 
@@ -87,10 +87,10 @@ div[role="tabpanel"] {
   position: relative;
   z-index: 2;
   padding: 0.5em 0.5em 0.7em;
-  border: 1px solid hsl(219deg 1% 72%);
+  border: 1px solid var(--light-grey);
   border-radius: 0 0.2em 0.2em;
-  box-shadow: 0 0 0.2em hsl(219deg 1% 72%);
-  background: hsl(220deg 43% 99%);
+  box-shadow: 0 0 0.2em var(--light-grey);
+  background: var(--almost-white);
 }
 
 [role="tabpanel"].is-hidden {
@@ -98,8 +98,7 @@ div[role="tabpanel"] {
 }
 
 [role="tabpanel"]:focus {
-  border-color: hsl(20deg 96% 48%);
-  /* box-shadow: 0 0 0.2em hsl(20deg 96% 48%); */
+  border-color: var(--illini-orange);
   box-shadow: 0 0 0.2em var(--illini-orange);
   outline: 0;
 }
@@ -109,7 +108,6 @@ div[role="tabpanel"] {
   bottom: 0;
   right: -1px;
   left: -1px;
-  /* border-bottom: 3px solid hsl(20deg 96% 48%); */
   border-bottom: 3px solid var(--illini-orange);
   border-radius: 0 0 0.2em 0.2em;
   content: "";
