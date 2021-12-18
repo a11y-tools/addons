@@ -3,9 +3,10 @@
 */
 
 import { TabSet } from './tabset.js';
-customElements.define('tab-set', TabSet);
+import TabEvents from './tabevents.js';
 
 var tabSet = document.querySelector('tab-set');
+var tabEvents;
 var myWindowId;
 
 /*
@@ -37,3 +38,6 @@ browser.windows.getCurrent({populate: true}).then((windowInfo) => {
   myWindowId = windowInfo.id;
   updateContent();
 });
+
+tabEvents = new TabEvents(tabSet.tabs, tabSet.panels);
+tabEvents.logArrays();

@@ -19,6 +19,19 @@ class TabSet extends HTMLElement {
     this._tabs = this.shadowRoot.querySelectorAll('[role="tab"]');
     this._panels = this.shadowRoot.querySelectorAll('[role="tabpanel"]');
   }
+
+  get tabs () {
+    const tabsArray = [];
+    tabsArray.push(...this.shadowRoot.querySelectorAll('[role="tab"]'));
+    return tabsArray;
+  }
+
+  get panels () {
+    const panelsArray = [];
+    panelsArray.push(...this.shadowRoot.querySelectorAll('[role="tabpanel"]'));
+    return panelsArray;
+  }
 }
 
+customElements.define('tab-set', TabSet);
 export { TabSet };
