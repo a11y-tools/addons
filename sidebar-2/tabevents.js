@@ -13,7 +13,6 @@ export default class TabEvents {
     for (let tab of this.tabs) {
       tab.addEventListener('click', this.clickHandler.bind(this));
       tab.addEventListener('keydown', this.keydownHandler.bind(this));
-      tab.addEventListener('keyup', this.keyupHandler.bind(this));
     }
 
     this.firstTab = this.tabs[0];
@@ -38,7 +37,8 @@ export default class TabEvents {
   }
 
   keydownHandler (event) {
-    let key = event.key;
+    let key = event.key,
+        tab = event.currentTarget;
 
     switch (key) {
       case 'Home':
@@ -51,26 +51,19 @@ export default class TabEvents {
         this.setFocusLastTab();
         break;
 
-      // ArrowUp and ArrowDown are in keydown
-      // because we need to prevent page scroll
-      case 'ArrowUp':
-      case 'ArrowDown':
-        event.preventDefault();
-        break;
-    }
-  }
-
-  keyupHandler (event) {
-    let key = event.key,
-        tab = event.currentTarget;
-
-    switch (key) {
       case 'ArrowLeft':
         this.setFocusPrevious(tab);
         break;
 
       case 'ArrowRight':
         this.setFocusNext(tab);
+        break;
+
+      // ArrowUp and ArrowDown are in keydown
+      // because we need to prevent page scroll
+      case 'ArrowUp':
+      case 'ArrowDown':
+        event.preventDefault();
         break;
 
       case 'Enter':
@@ -81,12 +74,7 @@ export default class TabEvents {
   }
 
   findPanel (id) {
-    for (let panel of this.panels) {
-      if (panel.id === id) {
-        console.log('panel.id', panel.id);
-        return panel;
-      }
-    }
+    return this.panels.find(panel => id === panel.id);
   }
 
   activate (tab) {
@@ -119,18 +107,14 @@ export default class TabEvents {
     this.lastTab.focus();
   }
 
-  getIndex (tab) {
-    return this.tabs.findIndex(item => item.id === tab.id);
-  }
-
   setFocusPrevious (tab) {
-    let index = this.getIndex(tab);
+    let index = this.tabs.indexOf(tab);
     index = (index === 0) ? this.indexOfLastTab : index - 1;
     this.tabs[index].focus();
   }
 
   setFocusNext (tab) {
-    let index = this.getIndex(tab);
+    let index = this.tabs.indexOf(tab);
     index = (index === this.indexOfLastTab) ? 0 : index + 1;
     this.tabs[index].focus();
   }

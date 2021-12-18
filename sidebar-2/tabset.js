@@ -16,15 +16,11 @@ class TabSet extends HTMLElement {
   }
 
   get tabs () {
-    const tabsArray = [];
-    tabsArray.push(...this.shadowRoot.querySelectorAll('[role="tab"]'));
-    return tabsArray;
+    return Array.from(this.shadowRoot.querySelectorAll('[role="tab"]'));
   }
 
   get panels () {
-    const panelsArray = [];
-    panelsArray.push(...this.shadowRoot.querySelectorAll('[role="tabpanel"]'));
-    return panelsArray;
+    return Array.from(this.shadowRoot.querySelectorAll('[role="tabpanel"]'));
   }
 }
 
