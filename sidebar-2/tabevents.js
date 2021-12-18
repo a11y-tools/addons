@@ -43,12 +43,12 @@ export default class TabEvents {
     switch (key) {
       case 'Home':
         event.preventDefault();
-        setFocusFirstTab();
+        this.setFocusFirstTab();
         break;
 
       case 'End':
         event.preventDefault();
-        setFocusLastTab();
+        this.setFocusLastTab();
         break;
 
       // ArrowUp and ArrowDown are in keydown
@@ -66,16 +66,16 @@ export default class TabEvents {
 
     switch (key) {
       case 'ArrowLeft':
-        setFocusPrevious(tab);
+        this.setFocusPrevious(tab);
         break;
 
       case 'ArrowRight':
-        setFocusNext(tab);
+        this.setFocusNext(tab);
         break;
 
       case 'Enter':
       case ' ':
-        activate(tab);
+        this.activate(tab);
         break;
     }
   }
@@ -96,10 +96,6 @@ export default class TabEvents {
 
     const panelId = tab.getAttribute('aria-controls');
     console.log(`aria-controls: ${panelId}`);
-    /*
-    const index = this.panels.findIndex(item => item.id === panelId);
-    this.panels[index].classList.remove('is-hidden');
-    */
     this.findPanel(panelId).classList.remove('is-hidden');
     tab.focus();
   }
