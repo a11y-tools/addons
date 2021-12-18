@@ -10,19 +10,12 @@
   <h2>URL of active tab</h2>
 
   <tab-set>
-    <tab-list>
-      <tab-button>Landmarks</tab-button>
-      <tab-button>Headings</tab-button>
-    </tab-list>
-    <tab-panel slot="panel">
-      Panel 1
-    </tab-panel>
-    <tab-panel slot="panel">
-      Panel 2
-    </tab-panel>
+    <span slot="button-1">Landmarks</span>
+    <span slot="button-2">Headings</span>
+    <div slot="panel-1">Panel 1 for Landmarks</div>
+    <div slot="panel-2" id="content"></div>
   </tab-set>
 
-  <div id = "content"></div>
   <p>Demonstrates that sidebar content updates when a new page loads or a different tab is selected.</p>
   <script src="panel.js" type="module"></script>
 </body>
