@@ -39,7 +39,7 @@ export default class TabEvents {
 
   clickHandler (event) {
     let tab = event.currentTarget;
-    console.log(`clickHandler tab.id: ${tab.id}`);
+    console.log(`clickHandler: ${tab.id}`);
     this.activate(tab);
   }
 
