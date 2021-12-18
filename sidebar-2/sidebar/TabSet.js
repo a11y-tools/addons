@@ -143,6 +143,9 @@ const tabPanelCss = `
     border: 1px solid #ddd;
     padding: 5px;
   }
+  .is-hidden {
+    display: none;
+  }
 `;
 
 class TabPanel extends HTMLElement {
@@ -163,6 +166,9 @@ class TabPanel extends HTMLElement {
     TabPanel.count++;
     this.panel.setAttribute('id', `panel-${TabPanel.count}`);
     this.panel.setAttribute('aria-labelledby', `button-${TabPanel.count}`);
+    if (TabPanel.count !== 1) {
+      this.panel.classList.add('is-hidden');
+    }
     this.register(this.panel);
   }
 }
