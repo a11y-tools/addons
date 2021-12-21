@@ -22,9 +22,9 @@ export default class TabEvents {
       tab.addEventListener('keydown', this.keydownHandler.bind(this));
     }
 
-    this.firstTab = this.tabs[0];
-    this.indexOfLastTab = this.tabs.length - 1;
-    this.lastTab = this.tabs[this.indexOfLastTab];
+    this.firstTab  = this.tabs[0];
+    this.lastIndex = this.tabs.length - 1;
+    this.lastTab   = this.tabs[this.lastIndex];
   }
 
   logArrays () {
@@ -54,20 +54,20 @@ export default class TabEvents {
     switch (key) {
       case 'Home':
         event.preventDefault();
-        this.setFocusFirstTab();
+        this.activate(this.firstTab);
         break;
 
       case 'End':
         event.preventDefault();
-        this.setFocusLastTab();
+        this.activate(this.lastTab);
         break;
 
       case 'ArrowLeft':
-        this.setFocusPrevious(tab);
+        this.activate(this.getPrevious(tab));
         break;
 
       case 'ArrowRight':
-        this.setFocusNext(tab);
+        this.activate(this.getNext(tab));
         break;
 
       // ArrowUp and ArrowDown are in keydown
@@ -75,11 +75,6 @@ export default class TabEvents {
       case 'ArrowUp':
       case 'ArrowDown':
         event.preventDefault();
-        break;
-
-      case 'Enter':
-      case ' ':
-        this.activate(tab);
         break;
     }
   }
@@ -92,11 +87,11 @@ export default class TabEvents {
     this.deactivateTabs();
     tab.removeAttribute('tabindex');
     tab.setAttribute('aria-selected', 'true');
+    tab.focus();
 
     const panelId = tab.getAttribute('aria-controls');
     console.log(`aria-controls: ${panelId}`);
     this.findPanel(panelId).classList.remove('is-hidden');
-    tab.focus();
   }
 
   deactivateTabs () {
@@ -110,23 +105,15 @@ export default class TabEvents {
     }
   }
 
-  setFocusFirstTab () {
-    this.firstTab.focus();
-  }
-
-  setFocusLastTab () {
-    this.lastTab.focus();
-  }
-
-  setFocusPrevious (tab) {
+  getPrevious (tab) {
     let index = this.tabs.indexOf(tab);
-    index = (index === 0) ? this.indexOfLastTab : index - 1;
-    this.tabs[index].focus();
+    index = (index === 0) ? this.lastIndex : index - 1;
+    return this.tabs[index]
   }
 
-  setFocusNext (tab) {
+  getNext (tab) {
     let index = this.tabs.indexOf(tab);
-    index = (index === this.indexOfLastTab) ? 0 : index + 1;
-    this.tabs[index].focus();
+    index = (index === this.lastIndex) ? 0 : index + 1;
+    return this.tabs[index];
   }
 }
