@@ -40,4 +40,3 @@ browser.windows.getCurrent({populate: true}).then((windowInfo) => {
 });
 
 tabEvents = new TabEvents(tabSet.tabs, tabSet.panels);
-tabEvents.logArrays();

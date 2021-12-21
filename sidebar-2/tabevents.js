@@ -25,16 +25,9 @@ export default class TabEvents {
     this.firstTab  = this.tabs[0];
     this.lastIndex = this.tabs.length - 1;
     this.lastTab   = this.tabs[this.lastIndex];
-  }
 
-  logArrays () {
-    console.log('logArrays...');
-    for (let t of this.tabs) {
-      console.log('tab: ', t.id);
-    }
-    for (let p of this.panels) {
-      console.log('panel: ', p.id)
-    }
+    // Make firstTab focusable prior to any tab activations
+    this.firstTab.removeAttribute('tabindex');
   }
 
   clickHandler (event) {
