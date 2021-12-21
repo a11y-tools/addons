@@ -47,6 +47,10 @@ export default class TabEvents {
     let key = event.key,
         tab = event.currentTarget;
 
+    if (event.ctrlKey || event.altKey || event.metaKey) {
+      return;
+    }
+
     switch (key) {
       case 'Home':
         event.preventDefault();
