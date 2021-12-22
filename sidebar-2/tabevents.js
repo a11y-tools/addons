@@ -1,16 +1,11 @@
 /*
-*   tabevents.js
-*/
-
-/*
 *   TabEvents
 *
-*   (1) The constructor takes two arguments, both arrays of DOM elements that
-*       are contained within a TabSet element.
-*   (2) These arrays can be obtained from the TabSet element by calling its
-*       'tabs' and 'panels' getters (e.g. 'let myTabs = tabSet.tabs').
-*   (3) The getter methods return these as JavaScript arrays by converting
-*       the nodeLists obtained with querySelectorAll using 'Array.from'.
+*   Handle the click and keyboard events for a tabbed interface, or tab set.
+*   Based on WAI-ARIA Authoring Practices 1.2 'Example of Tabs with Automatic
+*   Activation'.
+*
+*   Note: constructor @params 'tabs' and 'panels' are JavaScript arrays.
 */
 export default class TabEvents {
   constructor (tabs, panels) {
