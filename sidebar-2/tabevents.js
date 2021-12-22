@@ -3,7 +3,7 @@
 *
 *   Handle the click and keyboard events for a tabbed interface, or tab set.
 *   Based on WAI-ARIA Authoring Practices 1.2 'Example of Tabs with Automatic
-*   Activation'.
+*   Activation': w3c.github.io/aria-practices/examples/tabs/tabs-1/tabs.html
 *
 *   Note: constructor @params 'tabs' and 'panels' are JavaScript arrays.
 */
