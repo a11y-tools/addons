@@ -7,6 +7,7 @@
 *
 *   Note: constructor @params 'tabs' and 'panels' are JavaScript arrays.
 */
+
 export default class TabEvents {
   constructor (tabs, panels) {
     this.tabs = tabs;
@@ -58,8 +59,7 @@ export default class TabEvents {
         this.activate(this.getNext(tab));
         break;
 
-      // ArrowUp and ArrowDown are in keydown
-      // because we need to prevent page scroll
+      // Prevent page scrolling
       case 'ArrowUp':
       case 'ArrowDown':
         event.preventDefault();
@@ -95,12 +95,14 @@ export default class TabEvents {
 
   getPrevious (tab) {
     let index = this.tabs.indexOf(tab);
+    // Implement wraparound behavior
     index = (index === 0) ? this.lastIndex : index - 1;
     return this.tabs[index]
   }
 
   getNext (tab) {
     let index = this.tabs.indexOf(tab);
+    // Implement wraparound behavior
     index = (index === this.lastIndex) ? 0 : index + 1;
     return this.tabs[index];
   }
